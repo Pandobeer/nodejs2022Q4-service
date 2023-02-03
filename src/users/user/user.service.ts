@@ -1,7 +1,6 @@
 import { Injectable, Param } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-// import { UsersStore } from './../interfaces/user-storage.interface';
 import InMemoryUsersStorage from './../store/users.storage';
 
 @Injectable()
@@ -13,8 +12,8 @@ export class UserService {
         return this.usersStore.create(createUserDto);
     }
 
-    findAll() {
-        return `this users`;
+    getAllUsers() {
+        return this.usersStore.getAll();
     }
 
     findOne(id: string) {
@@ -29,9 +28,9 @@ export class UserService {
         return this.usersStore.delete(id);
     }
 
-    getSuggestedUsers(options: { limit: number, login: string; }) {
-        return this.usersStore.getSuggestedUsers(options.limit, options.login);
-    }
+    // getSuggestedUsers(options: { limit: number, login: string; }) {
+    //     return this.usersStore.getSuggestedUsers(options.limit, options.login);
+    // }
 
     delete(id: string): void {
         this.usersStore.delete(id);

@@ -9,24 +9,40 @@ import { UsersStore } from './../interfaces/user-storage.interface';
 @Injectable()
 class InMemoryUsersStorage implements UsersStore {
     private users: UserEntity[] = [];
+    // id: uuidv4(),
+    // login: "Mik",
+    // password: "bong",
+    // version: 0,
+    // createdAt: 123,
+    // updatedAt: 456,
+    // isDeleted: false,
+    // }];
 
     constructor() { }
 
-    findById(id: string): UserEntity | undefined {
-        return this.users.find(user => user.id === id
-            && this.isNotDeleted(user)
-        );
-    };
+    getAll() {
+        return this.users;
+    }
 
-    create(userDto: CreateUserDto): UserEntity {
+    async create(createUserDto: CreateUserDto): Promise<UserEntity> {
         const newUser = {
-            ...userDto,
+            ...createUserDto,
+            login: createUserDto.login,
             id: uuidv4(),
-            isDeleted: false
+            version: 1,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            // isDeleted: false
         } as UserEntity;
         this.users.push(newUser);
         return newUser;
     }
+
+    findById(id: string): UserEntity | undefined {
+        return this.users.find(user => user.id === id
+            // && this.isNotDeleted(user)
+        );
+    };
 
     update(updateUserDto: UpdateUserDto): UserEntity {
         this.users = this.users.map(user => {
@@ -43,24 +59,24 @@ class InMemoryUsersStorage implements UsersStore {
         this.users.filter(user => user.id === id);
     }
 
-    getSuggestedUsers(limit: number, login: string): UserEntity[] {
-        return this.sortedUsersByLogin()
-            .filter(user => user.login.includes(login) && this.isNotDeleted(user))
-            .slice(0, limit);
-    };
+    // getSuggestedUsers(limit: number, login: string): UserEntity[] {
+    //     return this.sortedUsersByLogin()
+    //         .filter(user => user.login.includes(login) && this.isNotDeleted(user))
+    //         .slice(0, limit);
+    // };
 
-    private sortedUsersByLogin(): UserEntity[] {
-        return this.users.sort((userA: UserEntity, userB: UserEntity): number => {
-            if (userA.login < userB.login) return -1;
-            if (userA.login > userB.login) return 1;
+    // private sortedUsersByLogin(): UserEntity[] {
+    //     return this.users.sort((userA: UserEntity, userB: UserEntity): number => {
+    //         if (userA.login < userB.login) return -1;
+    //         if (userA.login > userB.login) return 1;
 
-            return 0;
-        });
-    }
+    //         return 0;
+    //     });
+    // }
 
-    private isNotDeleted(user: UserDto): boolean {
-        return !user.isDeleted;
-    }
+    // private isNotDeleted(user: UserDto): boolean {
+    //     return !user.isDeleted;
+    // }
 
 }
 

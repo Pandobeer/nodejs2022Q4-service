@@ -1,8 +1,6 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateUserDto {
-    @IsString()
-    readonly id: string;
 
     @IsString()
     readonly login: string;
@@ -10,22 +8,18 @@ export class CreateUserDto {
     @IsString()
     readonly password: string;
 
-    @IsInt()
-    readonly version: number;
+    // @IsString()
+    // readonly id: string;
 
-    @IsInt()
-    readonly createdAt: number;
 
-    @IsInt()
-    readonly updatedAt: number;
+    // @IsInt()
+    // readonly version: number;
 
-    isDeleted: boolean;
+    // @IsInt()
+    // readonly createdAt: number;
+
+    // @IsInt()
+    // readonly updatedAt: number;
+
+    // isDeleted: boolean;
 }
-
-// interface CreateUserDto {
-//  @IsString()
-//  readonly login: string;
-//
-//  @IsString()
-//  readonly password: string;
-//   }
