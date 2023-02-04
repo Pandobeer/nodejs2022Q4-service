@@ -8,6 +8,7 @@ import { ArtistDto } from './dto/artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from '../entities/artist.entity';
 import { TrackService } from './../../tracks/track/track.service';
+import { AlbumsService } from 'src/albums/albums.service';
 
 @Controller('artist')
 export class ArtistController {
@@ -15,6 +16,9 @@ export class ArtistController {
 
     @Inject(TrackService)
     private readonly trackService: TrackService;
+
+    @Inject(AlbumsService)
+    private readonly albumsService: AlbumsService;
 
     @UseInterceptors(ClassSerializerInterceptor)
     @Post()
@@ -77,7 +81,8 @@ export class ArtistController {
             throw new HttpException(`Artist with provided id does not exist`, HttpStatus.NOT_FOUND);
         }
 
-        this.trackService.updateArtistIds(id);
+        this.trackService.updateArtistIdsInTracks(id);
+        this.albumsService.updateArtistIdsInAlbums(id);
 
         this.artistService.delete(id);
     }

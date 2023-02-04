@@ -24,14 +24,18 @@ export class TrackService {
     }
 
     remove(id: string) {
-        return this.trackStore.delete(id);
+        this.trackStore.delete(id);
     }
 
     delete(id: string): void {
         this.trackStore.delete(id);
     }
 
-    updateArtistIds(artistId: string) {
-        this.trackStore.updateArtistIds(artistId);
+    updateArtistIdsInTracks(artistId: string) {
+        this.trackStore.updateArtistIdsInTracks(artistId);
+    }
+
+    updateAlbumIds(albumId: string) {
+        this.trackStore.updateAlbumIds(albumId);
     }
 }

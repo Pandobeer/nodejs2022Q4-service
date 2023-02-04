@@ -58,9 +58,7 @@ export class TrackController {
             throw new HttpException(`Track with provided id does not exist`, HttpStatus.NOT_FOUND);
         }
 
-        const updatedTrack = await this.trackService.update(id, updateTrackDto);
-
-        return updatedTrack;
+        return await this.trackService.update(id, updateTrackDto);
     }
 
     @Delete('/:id')

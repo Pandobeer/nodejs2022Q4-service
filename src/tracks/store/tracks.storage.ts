@@ -20,10 +20,12 @@ class InMemoryTracksStorage implements TracksStore {
 
     async create(createTrackDto: CreateTrackDto): Promise<TrackEntity> {
         const albumId = createTrackDto.albumId || null;
+        const artistId = createTrackDto.artistId || null;
 
         const newTrack = {
             ...createTrackDto,
             albumId,
+            artistId,
             id: uuidv4(),
         };
         this.tracks.push(newTrack);
@@ -57,12 +59,24 @@ class InMemoryTracksStorage implements TracksStore {
         this.tracks.splice(indexOfArtistToDelete, 1);
     };
 
-    updateArtistIds(artistId: string) {
+    updateArtistIdsInTracks(artistId: string) {
         this.tracks = this.tracks.map((track) => {
             if (track.artistId === artistId) {
                 return {
                     ...track,
                     artistId: null
+                };
+            }
+            return track;
+        });
+    }
+
+    updateAlbumIds(albumId: string) {
+        this.tracks = this.tracks.map((track) => {
+            if (track.albumId === albumId) {
+                return {
+                    ...track,
+                    albumId: null
                 };
             }
             return track;
