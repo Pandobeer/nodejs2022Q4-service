@@ -20,7 +20,7 @@ class InMemoryArtistsStorage implements ArtistsStore {
         const newArtist = {
             ...createArtistDto,
             id: uuidv4(),
-        } as ArtistEntity;
+        };
         this.artists.push(newArtist);
 
         return newArtist;
@@ -38,7 +38,7 @@ class InMemoryArtistsStorage implements ArtistsStore {
         const updatedArtist = {
             ...artistToUpdate,
             ...updateArtistDto
-        } as ArtistEntity;
+        };
 
         this.artists.splice(indexOfArtistToUpdate, 1, updatedArtist);
 

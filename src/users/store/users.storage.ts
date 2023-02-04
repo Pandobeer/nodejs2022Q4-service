@@ -27,8 +27,7 @@ class InMemoryUsersStorage implements UsersStore {
             version: 1,
             createdAt,
             updatedAt,
-            // isDeleted: false
-        } as UserEntity;
+        };
         this.users.push(newUser);
 
         return newUser;
@@ -37,8 +36,6 @@ class InMemoryUsersStorage implements UsersStore {
     findById(id: string): UserEntity | undefined {
         const user = this.users.find(user => user.id === id);
         return user;
-        // && this.isNotDeleted(user)
-        // );
     };
 
     async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
@@ -52,7 +49,7 @@ class InMemoryUsersStorage implements UsersStore {
             version: userToUpdate.version + 1,
             createdAt: userToUpdate.createdAt,
             updatedAt: Date.now(),
-        } as UserEntity;
+        };
 
         this.users.splice(indexOfUserToUpdate, 1, updatedUser);
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UsePipes, HttpStatus, HttpCode, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UsePipes, HttpStatus, HttpCode, ClassSerializerInterceptor, UseInterceptors, Inject } from '@nestjs/common';
 import { ParseUUIDPipe, ValidationPipe } from '@nestjs/common/pipes';
 import { HttpException } from '@nestjs/common';
 import { isUUID } from 'class-validator';
@@ -7,11 +7,14 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { ArtistDto } from './dto/artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from '../entities/artist.entity';
+import { TrackService } from './../../tracks/track/track.service';
 
 @Controller('artist')
 export class ArtistController {
-
     constructor(private readonly artistService: ArtistService) { }
+
+    @Inject(TrackService)
+    private readonly trackService: TrackService;
 
     @UseInterceptors(ClassSerializerInterceptor)
     @Post()
@@ -73,6 +76,8 @@ export class ArtistController {
         if (!artistToDelete) {
             throw new HttpException(`Artist with provided id does not exist`, HttpStatus.NOT_FOUND);
         }
+
+        this.trackService.updateArtistIds(id);
 
         this.artistService.delete(id);
     }

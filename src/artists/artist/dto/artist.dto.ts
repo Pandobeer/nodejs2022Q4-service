@@ -1,8 +1,8 @@
 import { CreateArtistDto } from "./create-artist.dto";
-import { IsString, IsBoolean } from 'class-validator';
+import { IsString, IsBoolean, IsUUID } from 'class-validator';
 
 export class ArtistDto extends CreateArtistDto {
-    @IsString()
+    @IsUUID()
     readonly id: string;
 
     @IsString()
