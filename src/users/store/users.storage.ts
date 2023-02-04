@@ -1,23 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Exclude } from 'class-transformer';
 import { v4 as uuidv4 } from "uuid";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UpdateUserDto } from "../dto/update-user.dto";
-import { UserDto } from '../dto/user.dto';
 import { UserEntity } from "../entities/user.entity";
 import { UsersStore } from './../interfaces/user-storage.interface';
 
 @Injectable()
 class InMemoryUsersStorage implements UsersStore {
     private users: UserEntity[] = [];
-    // id: uuidv4(),
-    // login: "Mik",
-    // password: "bong",
-    // version: 0,
-    // createdAt: 123,
-    // updatedAt: 456,
-    // isDeleted: false,
-    // }];
 
     constructor() { }
 
