@@ -1,8 +1,7 @@
 import { CreateUserDto } from "./create-user.dto";
-import { IsInt, IsString, isUUID } from 'class-validator';
+import { IsInt, IsString } from 'class-validator';
 
 export class UserDto extends CreateUserDto {
-    // @isUUID()
     @IsString()
     readonly id: string;
 

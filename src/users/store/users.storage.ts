@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Exclude } from 'class-transformer';
 import { v4 as uuidv4 } from "uuid";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UpdateUserDto } from "../dto/update-user.dto";
@@ -25,39 +26,55 @@ class InMemoryUsersStorage implements UsersStore {
     }
 
     async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+
+        const createdAt = Date.now();
+        const updatedAt = createdAt;
+
         const newUser = {
             ...createUserDto,
             login: createUserDto.login,
             id: uuidv4(),
             version: 1,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
+            createdAt,
+            updatedAt,
             // isDeleted: false
         } as UserEntity;
         this.users.push(newUser);
+
         return newUser;
     }
 
     findById(id: string): UserEntity | undefined {
-        return this.users.find(user => user.id === id
-            // && this.isNotDeleted(user)
-        );
+        const user = this.users.find(user => user.id === id);
+        return user;
+        // && this.isNotDeleted(user)
+        // );
     };
 
-    update(updateUserDto: UpdateUserDto): UserEntity {
-        this.users = this.users.map(user => {
-            if (user.id === updateUserDto.id) {
-                return Object.assign(user, updateUserDto);
-            }
-            return user;
-        });
+    async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+        const userToUpdate = this.users.find((user) => user.id === id);
+        const indexOfUserToUpdate = this.users.indexOf(userToUpdate);
+        const newPassword = updateUserDto.newPassword;
 
-        return this.findById(updateUserDto.id);
-    };
+        const updatedUser = {
+            ...userToUpdate,
+            password: newPassword,
+            version: userToUpdate.version + 1,
+            createdAt: userToUpdate.createdAt,
+            updatedAt: Date.now(),
+        } as UserEntity;
+
+        this.users.splice(indexOfUserToUpdate, 1, updatedUser);
+
+        return updatedUser;
+    }
 
     delete(id: string): void {
-        this.users.filter(user => user.id === id);
-    }
+        const userToDelete = this.users.find((user) => user.id === id);
+        const indexOfUserToDelete = this.users.indexOf(userToDelete);
+
+        this.users.splice(indexOfUserToDelete, 1);
+    };
 
     // getSuggestedUsers(limit: number, login: string): UserEntity[] {
     //     return this.sortedUsersByLogin()
@@ -77,7 +94,6 @@ class InMemoryUsersStorage implements UsersStore {
     // private isNotDeleted(user: UserDto): boolean {
     //     return !user.isDeleted;
     // }
-
 }
 
 export default InMemoryUsersStorage;

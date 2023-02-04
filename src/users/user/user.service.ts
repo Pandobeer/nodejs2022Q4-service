@@ -20,8 +20,8 @@ export class UserService {
         return this.usersStore.findById(id);
     }
 
-    update(updateUserDto: UpdateUserDto) {
-        return this.usersStore.update(updateUserDto);
+    update(id: string, updateUserDto: UpdateUserDto) {
+        return this.usersStore.update(id, updateUserDto);
     }
 
     remove(id: string) {
@@ -35,10 +35,4 @@ export class UserService {
     delete(id: string): void {
         this.usersStore.delete(id);
     }
-
-    // timestamp: new Date().toISOString()
-
-    // findAll(): User[] {
-    //     return this.users;
-    // }
 }
