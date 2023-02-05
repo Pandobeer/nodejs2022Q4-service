@@ -57,8 +57,7 @@ class InMemoryUsersStorage implements UsersStore {
     }
 
     delete(id: string): void {
-        const userToDelete = this.users.find((user) => user.id === id);
-        const indexOfUserToDelete = this.users.indexOf(userToDelete);
+        const indexOfUserToDelete = this.users.findIndex((user) => user.id === id);
 
         this.users.splice(indexOfUserToDelete, 1);
     };

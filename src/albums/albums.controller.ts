@@ -65,5 +65,6 @@ export class AlbumsController {
     this.trackService.updateAlbumIds(id);
 
     this.albumsService.remove(id);
+
   }
 }

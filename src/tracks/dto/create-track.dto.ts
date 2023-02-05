@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsOptional } from 'class-validator';
+import { IsString, IsInt, ValidateIf } from 'class-validator';
 
 export class CreateTrackDto {
     @IsString()
@@ -8,9 +8,10 @@ export class CreateTrackDto {
     readonly duration: number;
 
     @IsString()
-    readonly artistId: string;
+    @ValidateIf((_object, value) => value !== null)
+    readonly artistId: string | null;
 
     @IsString()
-    @IsOptional()
+    @ValidateIf((_object, value) => value !== null)
     albumId: string | null;
 }

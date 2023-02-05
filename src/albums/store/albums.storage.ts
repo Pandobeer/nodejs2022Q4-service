@@ -51,8 +51,7 @@ class InMemoryAlbumsStorage implements AlbumsStore {
     }
 
     delete(id: string): void {
-        const albumToDelete = this.albums.find((album) => album.id === id);
-        const indexOfAlbumToDelete = this.albums.indexOf(albumToDelete);
+        const indexOfAlbumToDelete = this.albums.findIndex((album) => album.id === id);
 
         this.albums.splice(indexOfAlbumToDelete, 1);
     };

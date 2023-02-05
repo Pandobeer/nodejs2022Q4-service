@@ -46,8 +46,7 @@ class InMemoryArtistsStorage implements ArtistsStore {
     }
 
     delete(id: string): void {
-        const artistToDelete = this.artists.find((artist) => artist.id === id);
-        const indexOfArtistToDelete = this.artists.indexOf(artistToDelete);
+        const indexOfArtistToDelete = this.artists.findIndex((artist) => artist.id === id);
 
         this.artists.splice(indexOfArtistToDelete, 1);
     };

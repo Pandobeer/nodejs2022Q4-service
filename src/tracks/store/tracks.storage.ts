@@ -53,8 +53,7 @@ class InMemoryTracksStorage implements TracksStore {
     }
 
     delete(id: string): void {
-        const trackToDelete = this.tracks.find((track) => track.id === id);
-        const indexOfArtistToDelete = this.tracks.indexOf(trackToDelete);
+        const indexOfArtistToDelete = this.tracks.findIndex((track) => track.id === id);
 
         this.tracks.splice(indexOfArtistToDelete, 1);
     };
