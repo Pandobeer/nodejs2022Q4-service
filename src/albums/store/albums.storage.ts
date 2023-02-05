@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ArtistService } from 'src/artists/artist/artist.service';
+// import { ArtistService } from 'src/artists/artist/artist.service';
 import { v4 as uuidv4 } from "uuid";
 import { CreateAlbumDto } from '../dto/create-album.dto';
 import { UpdateAlbumDto } from '../dto/update-album.dto';

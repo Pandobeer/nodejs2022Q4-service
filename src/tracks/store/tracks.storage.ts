@@ -11,8 +11,8 @@ class InMemoryTracksStorage implements TracksStore {
     private tracks: TrackEntity[] = [];
 
     constructor() { }
-    @Inject(ArtistService)
-    private readonly artistsService: ArtistService;
+    // @Inject(ArtistService)
+    // private readonly artistsService: ArtistService;
 
     getAll() {
         return this.tracks;
