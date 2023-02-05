@@ -6,12 +6,9 @@ import { ArtistService } from './artist.service';
 import InMemoryArtistsStorage from './store/artists.storage';
 
 @Module({
-  imports: [
-    forwardRef(() => TrackModule),
-    forwardRef(() => AlbumsModule),
-  ],
+  imports: [forwardRef(() => TrackModule), forwardRef(() => AlbumsModule)],
   controllers: [ArtistController],
   providers: [ArtistService, InMemoryArtistsStorage],
-  exports: [ArtistService]
+  exports: [ArtistService],
 })
-export class ArtistModule { }
+export class ArtistModule {}

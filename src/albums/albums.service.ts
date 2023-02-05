@@ -5,7 +5,7 @@ import InMemoryAlbumsStorage from './store/albums.storage';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private albumsStore: InMemoryAlbumsStorage) { }
+  constructor(private albumsStore: InMemoryAlbumsStorage) {}
 
   create(createAlbumDto: CreateAlbumDto) {
     return this.albumsStore.create(createAlbumDto);
@@ -30,8 +30,4 @@ export class AlbumsService {
   updateArtistIdsInAlbums(artistId: string) {
     this.albumsStore.updateArtistIdsInAlbums(artistId);
   }
-
-  // updateAlbumIds(albumId: string) {
-  //   this.albumsStore.updateAlbumIds(albumId);
-  // }
 }

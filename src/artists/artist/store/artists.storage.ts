@@ -1,55 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { ArtistEntity } from 'src/artists/entities/artist.entity';
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto } from '../dto/create-artist.dto';
 import { UpdateArtistDto } from '../dto/update-artist.dto';
 import { ArtistsStore } from './../../interfaces/artist-storage.interface';
 
 @Injectable()
 class InMemoryArtistsStorage implements ArtistsStore {
-    private artists: ArtistEntity[] = [];
+  private artists: ArtistEntity[] = [];
 
-    constructor() { }
+  getAll() {
+    return this.artists;
+  }
 
-    getAll() {
-        return this.artists;
-    }
+  async create(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
+    const newArtist = {
+      ...createArtistDto,
+      id: uuidv4(),
+    };
+    this.artists.push(newArtist);
 
-    async create(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
+    return newArtist;
+  }
 
-        const newArtist = {
-            ...createArtistDto,
-            id: uuidv4(),
-        };
-        this.artists.push(newArtist);
+  findById(id: string): ArtistEntity | undefined {
+    const artist = this.artists.find((artist) => artist.id === id);
+    return artist;
+  }
 
-        return newArtist;
-    }
+  async update(
+    id: string,
+    updateArtistDto: UpdateArtistDto,
+  ): Promise<ArtistEntity> {
+    const artistToUpdate = this.artists.find((artist) => artist.id === id);
+    const indexOfArtistToUpdate = this.artists.indexOf(artistToUpdate);
 
-    findById(id: string): ArtistEntity | undefined {
-        const artist = this.artists.find(artist => artist.id === id);
-        return artist;
+    const updatedArtist = {
+      ...artistToUpdate,
+      ...updateArtistDto,
     };
 
-    async update(id: string, updateArtistDto: UpdateArtistDto): Promise<ArtistEntity> {
-        const artistToUpdate = this.artists.find((artist) => artist.id === id);
-        const indexOfArtistToUpdate = this.artists.indexOf(artistToUpdate);
+    this.artists.splice(indexOfArtistToUpdate, 1, updatedArtist);
 
-        const updatedArtist = {
-            ...artistToUpdate,
-            ...updateArtistDto
-        };
+    return updatedArtist;
+  }
 
-        this.artists.splice(indexOfArtistToUpdate, 1, updatedArtist);
+  delete(id: string): void {
+    const indexOfArtistToDelete = this.artists.findIndex(
+      (artist) => artist.id === id,
+    );
 
-        return updatedArtist;
-    }
-
-    delete(id: string): void {
-        const indexOfArtistToDelete = this.artists.findIndex((artist) => artist.id === id);
-
-        this.artists.splice(indexOfArtistToDelete, 1);
-    };
+    this.artists.splice(indexOfArtistToDelete, 1);
+  }
 }
 
 export default InMemoryArtistsStorage;

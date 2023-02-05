@@ -5,37 +5,37 @@ import InMemoryTracksStorage from '../store/tracks.storage';
 
 @Injectable()
 export class TrackService {
-    constructor(private trackStore: InMemoryTracksStorage) { }
+  constructor(private trackStore: InMemoryTracksStorage) {}
 
-    create(createTrackDto: CreateTrackDto) {
-        return this.trackStore.create(createTrackDto);
-    }
+  create(createTrackDto: CreateTrackDto) {
+    return this.trackStore.create(createTrackDto);
+  }
 
-    getAllTracks() {
-        return this.trackStore.getAll();
-    }
+  getAllTracks() {
+    return this.trackStore.getAll();
+  }
 
-    findOne(id: string) {
-        return this.trackStore.findById(id);
-    }
+  findOne(id: string) {
+    return this.trackStore.findById(id);
+  }
 
-    update(id: string, updateTrackDto: UpdateTrackDto) {
-        return this.trackStore.update(id, updateTrackDto);
-    }
+  update(id: string, updateTrackDto: UpdateTrackDto) {
+    return this.trackStore.update(id, updateTrackDto);
+  }
 
-    remove(id: string) {
-        this.trackStore.delete(id);
-    }
+  remove(id: string) {
+    this.trackStore.delete(id);
+  }
 
-    delete(id: string): void {
-        this.trackStore.delete(id);
-    }
+  delete(id: string): void {
+    this.trackStore.delete(id);
+  }
 
-    updateArtistIdsInTracks(artistId: string) {
-        this.trackStore.updateArtistIdsInTracks(artistId);
-    }
+  updateArtistIdsInTracks(artistId: string) {
+    this.trackStore.updateArtistIdsInTracks(artistId);
+  }
 
-    updateAlbumIds(albumId: string) {
-        this.trackStore.updateAlbumIds(albumId);
-    }
+  updateAlbumIds(albumId: string) {
+    this.trackStore.updateAlbumIds(albumId);
+  }
 }

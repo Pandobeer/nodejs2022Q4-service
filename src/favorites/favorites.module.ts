@@ -13,6 +13,6 @@ import { AlbumsModule } from 'src/albums/albums.module';
     forwardRef(() => AlbumsModule),
   ],
   controllers: [FavoritesController],
-  providers: [FavoritesService, InMemoryFavoritesStorage]
+  providers: [FavoritesService, InMemoryFavoritesStorage],
 })
-export class FavoritesModule { }
+export class FavoritesModule {}

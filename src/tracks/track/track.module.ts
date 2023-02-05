@@ -8,6 +8,6 @@ import { ArtistModule } from 'src/artists/artist/artist.module';
   imports: [forwardRef(() => ArtistModule)],
   controllers: [TrackController],
   providers: [TrackService, InMemoryTracksStorage],
-  exports: [TrackService]
+  exports: [TrackService],
 })
-export class TrackModule { }
+export class TrackModule {}

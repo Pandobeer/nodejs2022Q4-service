@@ -6,12 +6,9 @@ import InMemoryAlbumsStorage from './store/albums.storage';
 import { TrackModule } from 'src/tracks/track/track.module';
 
 @Module({
-  imports: [
-    forwardRef(() => ArtistModule),
-    forwardRef(() => TrackModule),
-  ],
+  imports: [forwardRef(() => ArtistModule), forwardRef(() => TrackModule)],
   controllers: [AlbumsController],
   providers: [AlbumsService, InMemoryAlbumsStorage],
-  exports: [AlbumsService]
+  exports: [AlbumsService],
 })
-export class AlbumsModule { }
+export class AlbumsModule {}

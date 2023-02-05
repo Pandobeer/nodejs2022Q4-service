@@ -5,29 +5,29 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Injectable()
 export class ArtistService {
-    constructor(private artistsStore: InMemoryArtistsStorage) { }
+  constructor(private artistsStore: InMemoryArtistsStorage) {}
 
-    create(createArtistDto: CreateArtistDto) {
-        return this.artistsStore.create(createArtistDto);
-    }
+  create(createArtistDto: CreateArtistDto) {
+    return this.artistsStore.create(createArtistDto);
+  }
 
-    getAllArtists() {
-        return this.artistsStore.getAll();
-    }
+  getAllArtists() {
+    return this.artistsStore.getAll();
+  }
 
-    findOne(id: string) {
-        return this.artistsStore.findById(id);
-    }
+  findOne(id: string) {
+    return this.artistsStore.findById(id);
+  }
 
-    update(id: string, updateArtistDto: UpdateArtistDto) {
-        return this.artistsStore.update(id, updateArtistDto);
-    }
+  update(id: string, updateArtistDto: UpdateArtistDto) {
+    return this.artistsStore.update(id, updateArtistDto);
+  }
 
-    remove(id: string) {
-        return this.artistsStore.delete(id);
-    }
+  remove(id: string) {
+    return this.artistsStore.delete(id);
+  }
 
-    delete(id: string): void {
-        this.artistsStore.delete(id);
-    }
+  delete(id: string): void {
+    this.artistsStore.delete(id);
+  }
 }

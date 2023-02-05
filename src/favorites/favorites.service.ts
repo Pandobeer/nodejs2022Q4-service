@@ -3,7 +3,7 @@ import InMemoryFavoritesStorage from './store/favorites.storage';
 
 @Injectable()
 export class FavoritesService {
-  constructor(private favoritesStore: InMemoryFavoritesStorage) { }
+  constructor(private favoritesStore: InMemoryFavoritesStorage) {}
 
   createFavTrack(trackId: string) {
     this.favoritesStore.createFavTrack(trackId);
@@ -35,7 +35,7 @@ export class FavoritesService {
 
   deleteAlbum(albumId: string): void {
     this.favoritesStore.deleteAlbum(albumId);
-  };
+  }
 
   findArtistById(artistId: string) {
     return this.favoritesStore.findArtistById(artistId);
@@ -43,6 +43,5 @@ export class FavoritesService {
 
   deleteArtist(artistId: string): void {
     this.favoritesStore.deleteArtist(artistId);
-  };
-
+  }
 }
