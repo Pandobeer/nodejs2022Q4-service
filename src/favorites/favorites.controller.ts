@@ -15,12 +15,12 @@ import { TrackService } from 'src/tracks/track/track.service';
 import { AlbumsService } from 'src/albums/album/albums.service';
 import { ArtistService } from 'src/artists/artist/artist.service';
 import { FavoritesResponseEntity } from './entities/favorites-response.entity';
-import { ApiTags } from '@nestjs/swagger/dist';
+import { ApiResponse, ApiTags } from '@nestjs/swagger/dist';
 
 @ApiTags('Favs')
 @Controller('favs')
 export class FavoritesController {
-  constructor(private readonly favoritesService: FavoritesService) {}
+  constructor(private readonly favoritesService: FavoritesService) { }
 
   @Inject(TrackService)
   private readonly trackService: TrackService;
@@ -97,6 +97,7 @@ export class FavoritesController {
 
   @Delete('track/:id')
   @HttpCode(204)
+  @ApiResponse({ description: 'Track was deleted succesfully' })
   deleteTrack(@Param('id', ParseUUIDPipe) trackId: string) {
     const favTrackId = this.favoritesService.findTrackById(trackId);
 
@@ -114,6 +115,7 @@ export class FavoritesController {
 
   @Delete('album/:id')
   @HttpCode(204)
+  @ApiResponse({ description: 'Album was deleted succesfully' })
   deleteAlbum(@Param('id', ParseUUIDPipe) albumId: string) {
     const favAlbumId = this.favoritesService.findAlbumById(albumId);
 
@@ -129,6 +131,7 @@ export class FavoritesController {
 
   @Delete('artist/:id')
   @HttpCode(204)
+  @ApiResponse({ description: 'Artist was deleted succesfully' })
   deleteArtist(@Param('id', ParseUUIDPipe) artistId: string) {
     const favArtistId = this.favoritesService.findArtistById(artistId);
 
