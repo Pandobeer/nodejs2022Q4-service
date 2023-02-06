@@ -13,7 +13,7 @@ class InMemoryAlbumsStorage implements AlbumsStore {
     return this.albums;
   }
 
-  async create(createAlbumDto: CreateAlbumDto): Promise<AlbumEntity> {
+  create(createAlbumDto: CreateAlbumDto): AlbumEntity {
     const artistId = createAlbumDto.artistId || null;
 
     const newAlbum = {
@@ -31,10 +31,7 @@ class InMemoryAlbumsStorage implements AlbumsStore {
     return album;
   }
 
-  async update(
-    id: string,
-    updateAlbumDto: UpdateAlbumDto,
-  ): Promise<AlbumEntity> {
+  update(id: string, updateAlbumDto: UpdateAlbumDto): AlbumEntity {
     const albumToUpdate = this.albums.find((album) => album.id === id);
     const indexOfAlbumToUpdate = this.albums.indexOf(albumToUpdate);
 

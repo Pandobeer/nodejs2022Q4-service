@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import InMemoryUsersStorage from '../store/users.storage';
+import InMemoryUsersStorage from './../store/users.storage';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 

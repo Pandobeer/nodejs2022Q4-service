@@ -17,13 +17,14 @@ import { ParseUUIDPipe, ValidationPipe } from '@nestjs/common/pipes';
 import { HttpException } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { ArtistService } from './artist.service';
-import { CreateArtistDto } from './dto/create-artist.dto';
-import { ArtistDto } from './dto/artist.dto';
-import { UpdateArtistDto } from './dto/update-artist.dto';
+import { CreateArtistDto } from '../dto/create-artist.dto';
+import { UpdateArtistDto } from '../dto/update-artist.dto';
 import { ArtistEntity } from '../entities/artist.entity';
 import { TrackService } from './../../tracks/track/track.service';
-import { AlbumsService } from 'src/albums/albums.service';
+import { AlbumsService } from 'src/albums/album/albums.service';
+import { ApiTags } from '@nestjs/swagger/dist';
 
+@ApiTags('Artists')
 @Controller('artist')
 export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
@@ -38,24 +39,22 @@ export class ArtistController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async create(
-    @Body() createArtistDto: CreateArtistDto,
-  ): Promise<ArtistEntity> {
-    const newArtist = await this.artistService.create(createArtistDto);
+  create(@Body() createArtistDto: CreateArtistDto): ArtistEntity {
+    const newArtist = this.artistService.create(createArtistDto);
 
     return newArtist;
   }
 
   @Get()
-  async getAll(): Promise<ArtistEntity[]> {
+  getAll(): ArtistEntity[] {
     return this.artistService.getAllArtists();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const artist: ArtistDto = this.artistService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const artist = this.artistService.findOne(id);
 
     if (!artist) {
       throw new HttpException(
@@ -69,10 +68,10 @@ export class ArtistController {
 
   @Put('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async update(
+  update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
-  ): Promise<ArtistEntity> {
+  ): ArtistEntity {
     const artist = this.artistService.findOne(id);
 
     if (!artist) {
@@ -82,14 +81,14 @@ export class ArtistController {
       );
     }
 
-    const updatedArtist = await this.artistService.update(id, updateArtistDto);
+    const updatedArtist = this.artistService.update(id, updateArtistDto);
 
     return updatedArtist;
   }
 
   @Delete('/:id')
   @HttpCode(204)
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     if (!isUUID(id)) {
       throw new HttpException(`Invalid artist Id`, HttpStatus.BAD_REQUEST);
     }

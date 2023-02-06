@@ -4,7 +4,7 @@ import { FavoritesController } from './favorites.controller';
 import InMemoryFavoritesStorage from './store/favorites.storage';
 import { ArtistModule } from 'src/artists/artist/artist.module';
 import { TrackModule } from 'src/tracks/track/track.module';
-import { AlbumsModule } from 'src/albums/albums.module';
+import { AlbumsModule } from 'src/albums/album/albums.module';
 
 @Module({
   imports: [

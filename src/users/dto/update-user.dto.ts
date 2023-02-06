@@ -1,11 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { UserDto } from './user.dto';
 import { IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateUserDto extends PartialType(UserDto) {
+export class UpdateUserDto {
+  @ApiProperty({ example: '12345' })
   @IsString()
-  readonly oldPassword: string;
+  oldPassword: string;
 
+  @ApiProperty({ example: '678' })
   @IsString()
-  readonly newPassword: string;
+  newPassword: string;
 }

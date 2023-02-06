@@ -15,12 +15,13 @@ import {
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { UserService } from './user.service';
-import { UserEntity } from './../entities/user.entity';
-import { UserDto } from '../dto/user.dto';
+import { UserEntity } from '../entities/user.entity';
 import { ParseUUIDPipe, ValidationPipe } from '@nestjs/common/pipes';
 import { HttpException } from '@nestjs/common';
 import { isUUID } from 'class-validator';
+import { ApiTags } from '@nestjs/swagger/dist';
 
+@ApiTags('Users')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -29,25 +30,25 @@ export class UserController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
-    const newUser = await this.userService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto) {
+    const newUser = this.userService.create(createUserDto);
     return new UserEntity(newUser);
   }
 
   @Get()
-  async getAll(): Promise<UserEntity[]> {
-    return this.userService.getAllUsers();
+  getAll(): UserEntity[] {
+    return this.userService.getAllUsers().map((user) => new UserEntity(user));
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     if (!isUUID(id)) {
       throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
     }
 
-    const user: UserDto = this.userService.findOne(id);
+    const user = this.userService.findOne(id);
 
     if (!user) {
       throw new HttpException(
@@ -62,10 +63,10 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async update(
+  update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity> {
+  ) {
     if (!isUUID(id)) {
       throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
     }
@@ -86,14 +87,14 @@ export class UserController {
       );
     }
 
-    const updateUser = await this.userService.update(id, updateUserDto);
+    const updateUser = this.userService.update(id, updateUserDto);
 
     return new UserEntity(updateUser);
   }
 
   @Delete('/:id')
   @HttpCode(204)
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     if (!isUUID(id)) {
       throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
     }

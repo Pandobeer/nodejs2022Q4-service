@@ -3,7 +3,7 @@ import { ArtistEntity } from 'src/artists/entities/artist.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto } from '../dto/create-artist.dto';
 import { UpdateArtistDto } from '../dto/update-artist.dto';
-import { ArtistsStore } from './../../interfaces/artist-storage.interface';
+import { ArtistsStore } from '../interfaces/artist-storage.interface';
 
 @Injectable()
 class InMemoryArtistsStorage implements ArtistsStore {
@@ -13,7 +13,7 @@ class InMemoryArtistsStorage implements ArtistsStore {
     return this.artists;
   }
 
-  async create(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
+  create(createArtistDto: CreateArtistDto): ArtistEntity {
     const newArtist = {
       ...createArtistDto,
       id: uuidv4(),
@@ -28,10 +28,7 @@ class InMemoryArtistsStorage implements ArtistsStore {
     return artist;
   }
 
-  async update(
-    id: string,
-    updateArtistDto: UpdateArtistDto,
-  ): Promise<ArtistEntity> {
+  update(id: string, updateArtistDto: UpdateArtistDto): ArtistEntity {
     const artistToUpdate = this.artists.find((artist) => artist.id === id);
     const indexOfArtistToUpdate = this.artists.indexOf(artistToUpdate);
 

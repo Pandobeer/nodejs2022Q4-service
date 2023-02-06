@@ -13,7 +13,7 @@ class InMemoryUsersStorage implements UsersStore {
     return this.users;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  create(createUserDto: CreateUserDto) {
     const createdAt = Date.now();
     const updatedAt = createdAt;
 
@@ -30,12 +30,12 @@ class InMemoryUsersStorage implements UsersStore {
     return newUser;
   }
 
-  findById(id: string): UserEntity | undefined {
+  findById(id: string) {
     const user = this.users.find((user) => user.id === id);
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  update(id: string, updateUserDto: UpdateUserDto) {
     const userToUpdate = this.users.find((user) => user.id === id);
     const indexOfUserToUpdate = this.users.indexOf(userToUpdate);
     const newPassword = updateUserDto.newPassword;
@@ -53,7 +53,7 @@ class InMemoryUsersStorage implements UsersStore {
     return updatedUser;
   }
 
-  delete(id: string): void {
+  delete(id: string) {
     const indexOfUserToDelete = this.users.findIndex((user) => user.id === id);
 
     this.users.splice(indexOfUserToDelete, 1);

@@ -13,7 +13,7 @@ class InMemoryTracksStorage implements TracksStore {
     return this.tracks;
   }
 
-  async create(createTrackDto: CreateTrackDto): Promise<TrackEntity> {
+  create(createTrackDto: CreateTrackDto): TrackEntity {
     const albumId = createTrackDto.albumId || null;
     const artistId = createTrackDto.artistId || null;
 
@@ -33,10 +33,7 @@ class InMemoryTracksStorage implements TracksStore {
     return track;
   }
 
-  async update(
-    id: string,
-    updateTrackDto: UpdateTrackDto,
-  ): Promise<TrackEntity> {
+  update(id: string, updateTrackDto: UpdateTrackDto): TrackEntity {
     const trackToUpdate = this.tracks.find((track) => track.id === id);
     const indexOfTrackToUpdate = this.tracks.indexOf(trackToUpdate);
 

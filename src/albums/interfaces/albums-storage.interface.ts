@@ -4,8 +4,8 @@ import { AlbumEntity } from '../entities/album.entity';
 
 export interface AlbumsStore {
   getAll: () => AlbumEntity[];
-  create: (params: CreateAlbumDto) => Promise<AlbumEntity>;
-  update: (id: string, album: UpdateAlbumDto) => Promise<AlbumEntity>;
+  create: (params: CreateAlbumDto) => AlbumEntity;
+  update: (id: string, album: UpdateAlbumDto) => AlbumEntity;
   findById: (id: string) => AlbumEntity | undefined;
   delete: (id: string) => void;
 }

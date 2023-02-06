@@ -12,10 +12,12 @@ import {
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { TrackService } from 'src/tracks/track/track.service';
-import { AlbumsService } from 'src/albums/albums.service';
+import { AlbumsService } from 'src/albums/album/albums.service';
 import { ArtistService } from 'src/artists/artist/artist.service';
 import { FavoritesResponseEntity } from './entities/favorites-response.entity';
+import { ApiTags } from '@nestjs/swagger/dist';
 
+@ApiTags('Favs')
 @Controller('favs')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}

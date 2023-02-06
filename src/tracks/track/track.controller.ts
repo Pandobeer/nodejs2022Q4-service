@@ -18,10 +18,11 @@ import { HttpException } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { TrackEntity } from '../entities/track.entity';
 import { CreateTrackDto } from '../dto/create-track.dto';
-import { TrackDto } from '../dto/track.dto';
 import { UpdateTrackDto } from '../dto/update-track.dto';
 import { ArtistService } from 'src/artists/artist/artist.service';
+import { ApiTags } from '@nestjs/swagger/dist';
 
+@ApiTags('Tracks')
 @Controller('track')
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
@@ -32,22 +33,22 @@ export class TrackController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async create(@Body() createTrackDto: CreateTrackDto): Promise<TrackEntity> {
-    const newTrack = await this.trackService.create(createTrackDto);
+  create(@Body() createTrackDto: CreateTrackDto): TrackEntity {
+    const newTrack = this.trackService.create(createTrackDto);
 
     return newTrack;
   }
 
   @Get()
-  async getAll(): Promise<TrackEntity[]> {
+  getAll(): TrackEntity[] {
     return this.trackService.getAllTracks();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const track: TrackDto = this.trackService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const track = this.trackService.findOne(id);
 
     if (!track) {
       throw new HttpException(
@@ -61,10 +62,10 @@ export class TrackController {
 
   @Put('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async update(
+  update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
-  ): Promise<TrackEntity> {
+  ): TrackEntity {
     const track = this.trackService.findOne(id);
 
     if (!track) {
@@ -74,12 +75,12 @@ export class TrackController {
       );
     }
 
-    return await this.trackService.update(id, updateTrackDto);
+    return this.trackService.update(id, updateTrackDto);
   }
 
   @Delete('/:id')
   @HttpCode(204)
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     const trackToDelete = this.trackService.findOne(id);
 
     if (!trackToDelete) {
