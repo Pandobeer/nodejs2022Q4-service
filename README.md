@@ -68,6 +68,28 @@ docker run -t -i -d -p 8001:8001 node-pg
 docker-compose up
 ```
 
+## Running scan built images:
+
+```
+npm run docker:scan
+```
+
+## Pushing images to dockerHub:
+
+```
+pushing app:
+1. docker login -u <dockerhub_username> -p <dockerhub_password>
+2. docker tag app <dockerhub_username>/my-image
+3. docker push <dockerhub_username>/my-image
+, where my-image - is the name of repo to push in at Docker Hub
+
+pushing db:
+2. docker tag db <dockerhub_username>/my-image
+3. docker push <dockerhub_username>/my-image
+, where my-image - is the name of repo to push in at Docker Hub
+
+```
+
 ## Testing
 
 After application running open new terminal and enter:
