@@ -10,6 +10,8 @@ services:
       - ${PORT}:8080
     volumes:
       - ./:/app
+    networks:
+      - mynet
     depends_on:
       - db
   db:
@@ -24,6 +26,8 @@ services:
     restart: always
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - mynet
     volumes:
       - db-data:/var/lib/postgresql/data
       - db-logs:/var/log/postgresql
@@ -33,5 +37,5 @@ volumes:
   db-logs:
 
 networks:
-  custom-network:
+  mynet:
     driver: bridge
