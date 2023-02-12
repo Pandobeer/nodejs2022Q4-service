@@ -78,8 +78,8 @@ export class FavoritesController {
   }
 
   @Get()
-  getAll(): FavoritesResponseEntity {
-    const allArtists = this.artistService.getAllArtists();
+  async getAll() {
+    const allArtists = await this.artistService.getAllArtists();
     const allAlbums = this.albumsService.findAll();
     const allTracks = this.trackService.getAllTracks();
     const favorites = this.favoritesService.getAll();
