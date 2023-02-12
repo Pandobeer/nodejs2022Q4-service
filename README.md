@@ -79,13 +79,13 @@ npm run docker:scan
 ```
 pushing app:
 1. docker login -u <dockerhub_username> -p <dockerhub_password>
-2. docker tag app <dockerhub_username>/my-image
-3. docker push <dockerhub_username>/my-image
+2. docker tag app:app <dockerhub_username>/my-image:app
+3. docker push <dockerhub_username>/my-image:app
 , where my-image - is the name of repo to push in at Docker Hub
 
 pushing db:
-2. docker tag db <dockerhub_username>/my-image
-3. docker push <dockerhub_username>/my-image
+2. docker tag db:db <dockerhub_username>/my-image:db
+3. docker push <dockerhub_username>/my-image:db
 , where my-image - is the name of repo to push in at Docker Hub
 
 ```
