@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   UsePipes,
-  HttpStatus,
   HttpCode,
   ClassSerializerInterceptor,
   UseInterceptors,
@@ -15,49 +14,46 @@ import {
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { UserService } from './user.service';
-import { UserEntity } from '../entities/user.entity';
 import { ParseUUIDPipe, ValidationPipe } from '@nestjs/common/pipes';
-import { HttpException } from '@nestjs/common';
-import { isUUID } from 'class-validator';
 import { ApiTags } from '@nestjs/swagger/dist';
 
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createUserDto: CreateUserDto) {
-    const newUser = this.userService.create(createUserDto);
-    return new UserEntity(newUser);
+    return this.userService.createUser(createUserDto);
   }
 
   @Get()
-  getAll(): UserEntity[] {
-    return this.userService.getAllUsers().map((user) => new UserEntity(user));
+  getAllUsers() {
+    return this.userService.getAllUsers();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    if (!isUUID(id)) {
-      throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
-    }
+    // if (!isUUID(id)) {
+    //   throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
+    // }
 
-    const user = this.userService.findOne(id);
+    // const user = this.userService.findOne(id);
 
-    if (!user) {
-      throw new HttpException(
-        `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return new UserEntity(user);
+    // if (!user) {
+    //   throw new HttpException(
+    //     `User with provided id does not exist`,
+    //     HttpStatus.NOT_FOUND,
+    //   );
+    // }
+    // return new UserEntity(user);
+    // return user;
+    return this.userService.findOne(id);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -67,46 +63,47 @@ export class UserController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    if (!isUUID(id)) {
-      throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
-    }
+    // if (!isUUID(id)) {
+    //   throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
+    // }
 
-    const user = this.userService.findOne(id);
+    // const user = await this.userService.findOne(id);
 
-    if (!user) {
-      throw new HttpException(
-        `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    // if (!user) {
+    //   throw new HttpException(
+    //     `User with provided id does not exist`,
+    //     HttpStatus.NOT_FOUND,
+    //   );
+    // }
 
-    if (user.password !== updateUserDto.oldPassword) {
-      throw new HttpException(
-        `Old password is incorrect`,
-        HttpStatus.FORBIDDEN,
-      );
-    }
+    // if (user.password !== updateUserDto.oldPassword) {
+    //   throw new HttpException(
+    //     `Old password is incorrect`,
+    //     HttpStatus.FORBIDDEN,
+    //   );
+    // }
 
-    const updateUser = this.userService.update(id, updateUserDto);
-
-    return new UserEntity(updateUser);
+    // const updateUser = this.userService.update(id, updateUserDto);
+    // return new UserEntity(updateUser);
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete('/:id')
   @HttpCode(204)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    if (!isUUID(id)) {
-      throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
-    }
+    // if (!isUUID(id)) {
+    //   throw new HttpException(`Invalid userId`, HttpStatus.BAD_REQUEST);
+    // }
 
-    const userToDelete = this.userService.findOne(id);
+    // const userToDelete = this.userService.findOne(id);
 
-    if (!userToDelete) {
-      throw new HttpException(
-        `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    // if (!userToDelete) {
+    //   throw new HttpException(
+    //     `User with provided id does not exist`,
+    //     HttpStatus.NOT_FOUND,
+    //   );
+    // }
 
     this.userService.delete(id);
   }
