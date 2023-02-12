@@ -14,7 +14,7 @@ git clone git@github.com:Pandobeer/nodejs2022Q4-service.git
 ## Installing NPM modules
 
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 
 ## Adding .env
@@ -29,8 +29,66 @@ npm start
 ```
 
 After starting the app on port (4000 as default) you can open POSTMAN or
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+in your browser OpenAPI documentation by typing http://localhost:4000/api/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## Create docker app image:
+
+```
+docker build . -t docker-basics-node
+```
+
+## Running docker app database image:
+
+```
+docker run -t -i -p 4000:4000 docker-basics-node
+```
+
+## Create docker pg database image:
+
+```
+docker build ./database -t node-pg
+```
+
+## Running docker pg database image:
+
+```
+docker run -t -i -p 8001:8001 node-pg
+```
+
+or run in detached way:
+
+```
+docker run -t -i -d -p 8001:8001 node-pg
+```
+
+## Running docker compose
+
+```
+docker-compose up
+```
+
+## Running scan built images:
+
+```
+npm run docker:scan
+```
+
+## Pushing images to dockerHub:
+
+```
+pushing app:
+1. docker login -u <dockerhub_username> -p <dockerhub_password>
+2. docker tag app:app <dockerhub_username>/my-image:app
+3. docker push <dockerhub_username>/my-image:app
+, where my-image - is the name of repo to push in at Docker Hub
+
+pushing db:
+2. docker tag db:db <dockerhub_username>/my-image:db
+3. docker push <dockerhub_username>/my-image:db
+, where my-image - is the name of repo to push in at Docker Hub
+
+```
 
 ## Testing
 
