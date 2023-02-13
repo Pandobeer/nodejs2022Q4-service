@@ -5,7 +5,6 @@ import {
   Body,
   Param,
   Delete,
-  Inject,
   UsePipes,
   Put,
   HttpCode,
@@ -14,44 +13,45 @@ import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from '../dto/create-album.dto';
 import { UpdateAlbumDto } from '../dto/update-album.dto';
 import { ParseUUIDPipe, ValidationPipe } from '@nestjs/common/pipes';
-import { AlbumEntity } from '../entities/album.entity';
-import { HttpException } from '@nestjs/common/exceptions';
-import { HttpStatus } from '@nestjs/common/enums';
-import { TrackService } from 'src/tracks/track/track.service';
+// import { AlbumEntity } from '../entities/album.entity';
+// import { HttpException } from '@nestjs/common/exceptions';
+// import { HttpStatus } from '@nestjs/common/enums';
+// import { TrackService } from 'src/tracks/track/track.service';
 import { ApiTags } from '@nestjs/swagger/dist';
 
 @ApiTags('Albums')
 @Controller('album')
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService) {}
+  constructor(private readonly albumsService: AlbumsService) { }
 
-  @Inject(TrackService)
-  private readonly trackService: TrackService;
+  // @Inject(TrackService)
+  // private readonly trackService: TrackService;
 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  create(@Body() createAlbumDto: CreateAlbumDto): AlbumEntity {
+  create(@Body() createAlbumDto: CreateAlbumDto) {
     return this.albumsService.create(createAlbumDto);
   }
 
   @Get()
   findAll() {
-    return this.albumsService.findAll();
+    return this.albumsService.getAllAlbums();
   }
 
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const album = this.albumsService.findOne(id);
+    // const album = this.albumsService.findOne(id);
 
-    if (!album) {
-      throw new HttpException(
-        `Album with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    // if (!album) {
+    //   throw new HttpException(
+    //     `Album with provided id does not exist`,
+    //     HttpStatus.NOT_FOUND,
+    //   );
+    // }
 
-    return album;
+    // return album;
+    return this.albumsService.findOne(id);
   }
 
   @Put(':id')
@@ -60,14 +60,14 @@ export class AlbumsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    const album = this.albumsService.findOne(id);
+    // const album = this.albumsService.findOne(id);
 
-    if (!album) {
-      throw new HttpException(
-        `Album with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    // if (!album) {
+    //   throw new HttpException(
+    //     `Album with provided id does not exist`,
+    //     HttpStatus.NOT_FOUND,
+    //   );
+    // }
 
     return this.albumsService.update(id, updateAlbumDto);
   }
@@ -75,17 +75,18 @@ export class AlbumsController {
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    const albumToDelete = this.albumsService.findOne(id);
+    // const albumToDelete = this.albumsService.findOne(id);
 
-    if (!albumToDelete) {
-      throw new HttpException(
-        `Album with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    // if (!albumToDelete) {
+    //   throw new HttpException(
+    //     `Album with provided id does not exist`,
+    //     HttpStatus.NOT_FOUND,
+    //   );
+    // }
 
-    this.trackService.updateAlbumIds(id);
+    // this.trackService.updateAlbumIds(id);
 
-    this.albumsService.remove(id);
+    // this.albumsService.remove(id);
+    return this.albumsService.delete(id);
   }
 }

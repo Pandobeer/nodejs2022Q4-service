@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+// import { Injectable } from '@nestjs/common';
 // import InMemoryArtistsStorage from '../store/artists.storage';
 import { CreateArtistDto } from '../dto/create-artist.dto';
 import { UpdateArtistDto } from '../dto/update-artist.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArtistEntity } from 'src/typeorm';
 import { Repository } from 'typeorm';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
-import { HttpStatus } from '@nestjs/common/enums';
+// import { HttpException } from '@nestjs/common/exceptions/http.exception';
+// import { HttpStatus } from '@nestjs/common/enums';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ArtistService {
@@ -27,7 +28,7 @@ export class ArtistService {
 
   async getAllArtists() {
     const artists = await this.artistRepository.find();
-    console.log(artists);
+    // console.log(artists);
 
     return artists;
   }

@@ -80,7 +80,7 @@ export class FavoritesController {
   @Get()
   async getAll() {
     const allArtists = await this.artistService.getAllArtists();
-    const allAlbums = this.albumsService.findAll();
+    const allAlbums = await this.albumsService.getAllAlbums();
     const allTracks = this.trackService.getAllTracks();
     const favorites = this.favoritesService.getAll();
 
