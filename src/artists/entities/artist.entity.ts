@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 import { PrimaryGeneratedColumn, Entity, OneToMany } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
-import { AlbumEntity } from 'src/albums/entities/album.entity';
+import { AlbumEntity } from 'src/typeorm';
+import { TrackEntity } from 'src/typeorm';
 
 @Entity()
 export class ArtistEntity {
@@ -18,9 +19,12 @@ export class ArtistEntity {
   grammy: boolean;
 
   @OneToMany(() => AlbumEntity, (album) => album.artistId, {
-    // onDelete: 'SET NULL'
   })
   albums: AlbumEntity[];
+
+  @OneToMany(() => TrackEntity, (track) => track.artistId, {
+  })
+  tracks: TrackEntity[];
 
   constructor(entity: ArtistEntity) {
     Object.assign(this, entity);
