@@ -1,18 +1,13 @@
-// import { Injectable } from '@nestjs/common';
-// import InMemoryArtistsStorage from '../store/artists.storage';
 import { CreateArtistDto } from '../dto/create-artist.dto';
 import { UpdateArtistDto } from '../dto/update-artist.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArtistEntity } from 'src/typeorm';
 import { Repository } from 'typeorm';
-// import { HttpException } from '@nestjs/common/exceptions/http.exception';
-// import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ArtistService {
   constructor(
-    // private artistsStore: InMemoryArtistsStorage
     @InjectRepository(ArtistEntity) private readonly artistRepository: Repository<ArtistEntity>
   ) { }
 
@@ -28,13 +23,11 @@ export class ArtistService {
 
   async getAllArtists() {
     const artists = await this.artistRepository.find();
-    // console.log(artists);
 
     return artists;
   }
 
   async findOne(id: string) {
-    // return this.artistRepository.findById(id);
     const artist = await this.artistRepository.findOneBy({ id });
 
     if (!artist) {
@@ -48,7 +41,6 @@ export class ArtistService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    // return this.artistRepository.update(id, updateArtistDto);
     const artistToUpdate = await this.artistRepository.findOneBy({ id });
 
     if (!artistToUpdate) {
@@ -67,10 +59,6 @@ export class ArtistService {
 
     return updatedArtist;
   }
-
-  // remove(id: string) {
-  //   return this.artistRepository.delete(id);
-  // }
 
   async delete(id: string) {
     const artistToDelete = await this.artistRepository.findOneBy({ id });

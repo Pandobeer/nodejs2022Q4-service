@@ -1,7 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateTrackDto } from '../dto/create-track.dto';
 import { UpdateTrackDto } from '../dto/update-track.dto';
-// import InMemoryTracksStorage from '../store/tracks.storage';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TrackEntity } from 'src/typeorm';
 import { Repository } from 'typeorm';
@@ -9,12 +8,11 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class TrackService {
   constructor(
-    // private trackRepository: InMemoryTracksStorage
     @InjectRepository(TrackEntity) private readonly trackRepository: Repository<TrackEntity>
   ) { }
 
   async create(createTrackDto: CreateTrackDto) {
-    // return this.trackRepository.create(createTrackDto);
+
     const newTrack = this.trackRepository.create({
       ...createTrackDto,
     });
@@ -25,14 +23,12 @@ export class TrackService {
   }
 
   async getAllTracks() {
-    // return this.trackRepository.getAll();
     const tracks = await this.trackRepository.find();
 
     return tracks;
   }
 
   async findOne(id: string) {
-    // return this.trackRepository.findById(id);
     const track = await this.trackRepository.findOneBy({ id });
 
     if (!track) {
@@ -46,7 +42,6 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    // return this.trackRepository.update(id, updateTrackDto);
     const trackToUpdate = await this.trackRepository.findOneBy({ id });
 
     if (!trackToUpdate) {
@@ -66,13 +61,8 @@ export class TrackService {
     return updatedTrack;
   }
 
-  // remove(id: string) {
-  //   this.trackRepository.delete(id);
-  // }
-
   async delete(id: string) {
 
-    // this.trackRepository.delete(id);
     const trackToDelete = await this.trackRepository.findOneBy({ id });
 
     if (!trackToDelete) {
@@ -84,12 +74,4 @@ export class TrackService {
 
     return this.trackRepository.delete(id);
   }
-
-  // updateArtistIdsInTracks(artistId: string) {
-  //   this.trackRepository.updateArtistIdsInTracks(artistId);
-  // }
-
-  // updateAlbumIds(albumId: string) {
-  //   this.trackRepository.updateAlbumIds(albumId);
-  // }
 }
