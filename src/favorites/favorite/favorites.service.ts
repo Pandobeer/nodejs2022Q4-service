@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { FavoriteEntity, TrackEntity, AlbumEntity, ArtistEntity } from 'src/typeorm';
-import { defaultFavorites } from './constants';
+import { FavoritesResponseEntity } from './../entities/favorites-response.entity';
 
 @Injectable()
 export class FavoritesService {
@@ -43,11 +43,9 @@ export class FavoritesService {
 
     if (!favorites.tracksIds.includes(favTrack.id)) {
       favorites.tracksIds.push(favTrack.id);
-      // await this.favoritesRepository.save(favorites);
-      await this.favoritesRepository.update(favorites.id, { tracksIds: favorites.tracksIds });
+      await this.favoritesRepository.save(favorites);
+      // await this.favoritesRepository.update(favorites.id, { tracksIds: favorites.tracksIds });
     }
-
-    console.log(1, favorites.tracksIds, 'favorites.tracksIds', favorites, 'favorites');
 
     return `Track with id ${id} was successfully added to favourite tracks`;
   }
@@ -98,59 +96,70 @@ export class FavoritesService {
 
   async getAll() {
 
-    // const favorite = new FavoriteEntity();
-    const favorites = await this.favoritesRepository.find({
-      // relations: {
-      //   tracksIds: true,
-      // }
+    // const favorites = await this.initFavorites();
+
+    // // const favorites = await this.favoritesRepository.find({
+    // //   // relations: {
+    // //   //   tracksIds: true,
+    // //   // }
+    // // });
+
+    // console.log(favorites);
+
+    // const artists: ArtistEntity[] = [];
+    // for (const artistId of favorites.artistsIds) {
+    //   if (artistId) {
+    //     const artist = await this.artistRepository.findOneBy({ id: artistId });
+    //     artists.push(artist);
+    //   }
+    //   // const artist = await this.artistRepository.findOneBy({ id: artistId });
+    //   // artists.push(artist);
+    // }
+
+    // const albums: AlbumEntity[] = [];
+    // for (const albumId of favorites.albumsIds) {
+    //   const album = await this.albumRepository.findOneBy({ id: albumId });
+    //   albums.push(album);
+    // }
+
+    // const tracks: TrackEntity[] = [];
+    // for (const trackId of favorites.tracksIds) {
+    //   const track = await this.trackRepository.findOneBy({ id: trackId });
+    //   tracks.push(track);
+    // }
+
+    // return {
+    //   artists,
+    //   albums,
+    //   tracks
+    // };
+
+    const [favorite] = await this.favoritesRepository.find();
+
+    const albums = await this.albumRepository.findBy({
+      id: In(favorite.albumsIds),
     });
-    console.log(5, favorites, 'favorites');
 
-    // let favTrackIds = favorites.tracksIds;
-    // console.log(6, favTrackIds, 'ids');
+    const artists = await this.artistRepository.findBy({
+      id: In(favorite.artistsIds),
+    });
 
-    // let favTracks = await this.trackRepository.find(
-    //   {
-    //     // where: favTrackIds.map((id) => ({ id })),
-    //     where: { id: In(favTrackIds), }
-    //   });
-    // // const [allTracks] = await this.trackRepository.find({});
+    const tracks = await this.trackRepository.findBy({
+      id: In(favorite.tracksIds),
+    });
 
-    // if (!favTracks) {
-    //   favTracks = [];
+    console.log(tracks, albums, artists);
+
+    const allFavs = new FavoritesResponseEntity({
+      tracks,
+      albums,
+      artists,
+    });
+
+    return allFavs;
     // }
-    // // if (!favTrackIds) {
-    // //   return { favTrackIds: [] };
-    // // }
-    // const favorites = await this.favoritesRepository.find();
 
-    // // const trackIds = favorites.flatMap((favorite) => favorite.tracksIds);
-
-
-    // if (!favTrackIds) {
-    //   return { favTrackIds: [] };
-    // }
-    // const [tracks] = await Promise.all(
-    //   favorites.tracks.map((favTrackIds) => this.trackRepository.findBy({ id: favTrackIds }))
-    // );
-
-
-
-    // const favoriteTracks = favorites.reduce((acc, fav) => [...acc, ...fav.tracks], []);
-    // const favoriteAlbums = favorites.reduce((acc, fav) => [...acc, ...fav.albums], []);
-    // const favoriteArtists = favorites.reduce((acc, fav) => [...acc, ...fav.artists], []);
-    // console.log(favorites, 'this.favorites', favoriteTracks, 'favTr');
-
-    return {
-      // favTracks,
-      // favoriteAlbums,
-      // favoriteArtists
-    };
-
-    // const allArtists = await this.artistService.getAllArtists();
-    // const allAlbums = await this.albumsService.getAllAlbums();
     // const allTracks = await this.trackRepository.find({ relations: ['tracks'] });
-    // const favorites = this.favoritesService.getAll();
 
     // const favoritesAll = {
     //   artists: allArtists.filter((artist) =>
@@ -175,6 +184,9 @@ export class FavoritesService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    // this.favoritesRepository.delete({ id: trackIdToDel });
+
     favTracksIds = favTracksIds.filter(id => id !== trackIdToDel);
 
     await this.favoritesRepository.update(favorites.id, { tracksIds: favTracksIds });
@@ -215,11 +227,12 @@ export class FavoritesService {
     }
     // this.favoritesRepository.deleteTrack(trackId);
 
-    favArtistsIds = favArtistsIds.filter(id => id !== artistIdToDel);
+    favArtistsIds = favArtistsIds.filter(id => id !== artistIdToDel || id === null);
+    // favArtistsIds = favArtistsIds.filter(id => id === null);
 
     await this.favoritesRepository.update(favorites.id, { artistsIds: favArtistsIds });
 
-    return `Album with id ${artistIdToDel} was successfully deleted from favourite albums`;
+    return `Artist with id ${artistIdToDel} was successfully deleted from favourite albums`;
   }
 
   // findArtistById(artistId: string) {

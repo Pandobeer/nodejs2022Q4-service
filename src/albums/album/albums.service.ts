@@ -42,35 +42,18 @@ export class AlbumsService {
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const albumToUpdate = await this.albumRepository.findOneBy({ id });
+    const albumToUpdate = await this.findOne(id);
 
-    if (!albumToUpdate) {
-      throw new HttpException(
-        `Album with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    Object.assign(albumToUpdate, updateAlbumDto);
 
-    const updatedAlbum = new AlbumEntity({
-      ...albumToUpdate,
-      ...updateAlbumDto,
-    });
+    await this.albumRepository.save(albumToUpdate);
 
-    await this.albumRepository.update(id, updatedAlbum);
-
-    return updatedAlbum;
+    return albumToUpdate;
   }
 
   async delete(id: string) {
-    const albumToDelete = await this.albumRepository.findOneBy({ id });
+    const albumToDelete = await this.findOne(id);
 
-    if (!albumToDelete) {
-      throw new HttpException(
-        'Album with provided id does not exist',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return this.albumRepository.delete(id);
+    return this.albumRepository.delete(albumToDelete.id);
   }
 }

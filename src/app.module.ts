@@ -5,11 +5,11 @@ import { UserModule } from './users/user/user.module';
 import { ArtistModule } from './artists/artist/artist.module';
 import { TrackModule } from './tracks/track/track.module';
 import { AlbumsModule } from './albums/album/albums.module';
-import { FavoritesModule } from './favorites/favorites.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import entities from './typeorm/index';
+import { FavoritesModule } from './favorites/favorite/favorites.module';
 
 @Module({
   imports: [

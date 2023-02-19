@@ -38,7 +38,7 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 docker build . -t docker-basics-node
 ```
 
-## Running docker app database image:
+## Running docker app image:
 
 ```
 docker run -t -i -p 4000:4000 docker-basics-node

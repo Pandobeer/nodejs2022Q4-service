@@ -42,36 +42,16 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    const trackToUpdate = await this.trackRepository.findOneBy({ id });
+    const trackToUpdate = await this.findOne(id);
 
-    if (!trackToUpdate) {
-      throw new HttpException(
-        `Track with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const updatedTrack = new TrackEntity({
-      ...trackToUpdate,
-      ...updateTrackDto,
-    });
-
-    await this.trackRepository.update(id, updatedTrack);
-
-    return updatedTrack;
+    return await this.trackRepository.save({ ...trackToUpdate, ...updateTrackDto });
   }
 
   async delete(id: string) {
 
-    const trackToDelete = await this.trackRepository.findOneBy({ id });
+    const trackToDelete = await this.findOne(id);
 
-    if (!trackToDelete) {
-      throw new HttpException(
-        'Track with provided id does not exist',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    return await this.trackRepository.delete(trackToDelete.id);
 
-    return this.trackRepository.delete(id);
   }
 }

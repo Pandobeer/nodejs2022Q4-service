@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
-import { PrimaryGeneratedColumn, Entity, OneToMany } from 'typeorm';
+import { PrimaryGeneratedColumn, Entity, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
-import { AlbumEntity } from 'src/typeorm';
+import { AlbumEntity, FavoriteEntity } from 'src/typeorm';
 import { TrackEntity } from 'src/typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class ArtistEntity {
@@ -26,7 +27,17 @@ export class ArtistEntity {
   })
   tracks: TrackEntity[];
 
-  constructor(entity: ArtistEntity) {
+  // @ManyToMany(() => FavoriteEntity, (favorite) => favorite.artists, {
+  //   eager: true,
+  //   cascade: true,
+  //   onDelete: 'CASCADE'
+  //   // orphanedRowAction: "delete"
+  // })
+  // @JoinTable()
+  // @Exclude()
+  // favorites: FavoriteEntity[];
+
+  constructor(entity: Partial<ArtistEntity>) {
     Object.assign(this, entity);
   }
 }

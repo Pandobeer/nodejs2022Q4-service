@@ -58,6 +58,6 @@ export class TrackController {
   @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
 
-    this.trackService.delete(id);
+    return this.trackService.delete(id);
   }
 }

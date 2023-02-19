@@ -41,23 +41,13 @@ export class ArtistService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    const artistToUpdate = await this.artistRepository.findOneBy({ id });
+    const artistToUpdate = await this.findOne(id);
 
-    if (!artistToUpdate) {
-      throw new HttpException(
-        `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    Object.assign(artistToUpdate, updateArtistDto);
 
-    const updatedArtist = new ArtistEntity({
-      ...artistToUpdate,
-      ...updateArtistDto,
-    });
+    await this.artistRepository.save(artistToUpdate);
 
-    await this.artistRepository.update(id, updatedArtist);
-
-    return updatedArtist;
+    return artistToUpdate;
   }
 
   async delete(id: string) {
