@@ -1,6 +1,6 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
 
 @Entity()
@@ -14,21 +14,24 @@ export class UserEntity {
   login: string;
 
   @Exclude()
+  @Column()
   password: string;
 
   @ApiProperty({ example: 1 })
-  @Column({ nullable: false, default: 1 })
+  @VersionColumn()
   version: number;
 
   @ApiProperty({ example: 1655000000 })
-  @Column({ nullable: false, type: 'bigint' })
+  @CreateDateColumn()
+  @Transform(({ value }) => new Date(value).getTime())
   createdAt: number;
 
   @ApiProperty({ example: 1655000000 })
-  @Column({ nullable: false, type: 'bigint' })
+  @UpdateDateColumn()
+  @Transform(({ value }) => new Date(value).getTime())
   updatedAt: number;
 
-  constructor(partial: Partial<UserEntity>) {
-    Object.assign(this, partial);
+  constructor(entity: Partial<UserEntity>) {
+    Object.assign(this, entity);
   }
 }

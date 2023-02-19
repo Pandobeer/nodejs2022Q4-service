@@ -13,13 +13,9 @@ export class UserService {
   ) { }
 
   createUser(createUserDto: CreateUserDto) {
-    const createdAt = Date.now();
-    const updatedAt = createdAt;
 
     const newUser = this.userRepository.create({
       ...createUserDto,
-      createdAt,
-      updatedAt,
     });
     return this.userRepository.save(newUser);
   }
@@ -44,14 +40,7 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOneBy({ id });
-
-    if (!user) {
-      throw new HttpException(
-        `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const user = await this.findOne(id);
 
     if (user.password !== updateUserDto.oldPassword) {
       throw new HttpException(
@@ -60,16 +49,11 @@ export class UserService {
       );
     }
 
-    const updatedUser = new UserEntity({
-      ...user,
-      password: updateUserDto.newPassword,
-      version: user.version + 1,
-      updatedAt: Date.now(),
-    });
+    Object.assign(user, { password: updateUserDto.newPassword });
 
-    await this.userRepository.update(id, updatedUser);
+    await this.userRepository.save(user);
 
-    return updatedUser;
+    return user;
   }
 
   async delete(id: string) {
