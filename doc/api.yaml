@@ -360,6 +360,10 @@ paths:
       responses:
         '204':
           description: ''
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/AlbumEntity'
       tags:
         - Albums
   '/favs/track/{id}':

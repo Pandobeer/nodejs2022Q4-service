@@ -27,14 +27,12 @@ export class AlbumEntity {
   @Column({ nullable: true, default: null })
   artistId: string | null;
 
-  @ManyToOne(() => ArtistEntity, (artist) => artist.albums, {
-    onDelete: 'SET NULL',
-    createForeignKeyConstraints: false,
-  })
-  @JoinColumn({ name: 'artistId' })
+  @ManyToOne(() => ArtistEntity, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'artistId', referencedColumnName: 'id' })
   artist: ArtistEntity;
 
-  @OneToMany(() => TrackEntity, (track) => track.albumId, {})
+  @OneToMany(() => TrackEntity, (album) => album.artist)
+  @JoinColumn({ referencedColumnName: 'albumId' })
   tracks: TrackEntity[];
 
   constructor(entity: Partial<AlbumEntity>) {

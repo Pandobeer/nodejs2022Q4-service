@@ -10,7 +10,7 @@ export class AlbumsService {
   constructor(
     @InjectRepository(AlbumEntity)
     private readonly albumRepository: Repository<AlbumEntity>,
-  ) {}
+  ) { }
 
   async create(createAlbumDto: CreateAlbumDto) {
     const newAlbum = this.albumRepository.create({
@@ -52,8 +52,16 @@ export class AlbumsService {
   }
 
   async delete(id: string) {
-    const albumToDelete = await this.findOne(id);
+    // const albumToDelete = await this.findOne(id);
+    const albumToDelete = await this.albumRepository.findOneBy({ id });
 
-    return this.albumRepository.delete(albumToDelete.id);
+    if (!albumToDelete) {
+      throw new HttpException(
+        `Album with provided id does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.albumRepository.remove(albumToDelete);
   }
 }

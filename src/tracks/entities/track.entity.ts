@@ -17,20 +17,20 @@ export class TrackEntity {
   @Column({ nullable: true, default: null })
   artistId: string | null;
 
-  @ManyToOne(() => ArtistEntity, (artist) => artist.tracks, {
-    onDelete: 'SET NULL',
+  @ManyToOne(() => ArtistEntity, {
+    onDelete: 'SET NULL'
   })
-  @JoinColumn({ name: 'artistId' })
+  @JoinColumn({ name: 'artistId', referencedColumnName: 'id' })
   artist: ArtistEntity;
 
   @ApiProperty({ format: 'uuid', example: null })
   @Column({ nullable: true, default: null })
   albumId: string | null;
 
-  @ManyToOne(() => AlbumEntity, (album) => album.tracks, {
-    onDelete: 'SET NULL',
+  @ManyToOne(() => AlbumEntity, {
+    onDelete: 'SET NULL'
   })
-  @JoinColumn({ name: 'albumId' })
+  @JoinColumn({ name: 'albumId', referencedColumnName: 'id' })
   album: AlbumEntity;
 
   @ApiProperty({ example: 262 })
