@@ -105,7 +105,6 @@ export class FavoritesService {
 
   async getAll() {
     const [favorite] = await this.favoritesRepository.find();
-    console.log(favorite);
 
     const albums = await this.albumRepository.findBy({
       id: In(favorite.albumsIds),
@@ -118,8 +117,6 @@ export class FavoritesService {
     const tracks = await this.trackRepository.findBy({
       id: In(favorite.tracksIds),
     });
-
-    console.log(tracks, albums, artists);
 
     const allFavs = new FavoritesResponseEntity({
       tracks,

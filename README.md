@@ -90,6 +90,20 @@ pushing db:
 
 ```
 
+## Running migrations
+
+```
+npm run migrate:up
+
+Before running the script, please check, if the application container is running (docker-compose up -d)
+```
+
+Reverting migrations (each migration by one time)
+
+```
+npm run migrate:down
+```
+
 ## Testing
 
 After application running open new terminal and enter:

@@ -1,5 +1,4 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { FavoriteEntity } from '..';
 
 export class Favorite1676910867432 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -13,6 +12,6 @@ export class Favorite1676910867432 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.manager.clear(FavoriteEntity);
+    await queryRunner.query(`TRUNCATE TABLE favorites CASCADE`);
   }
 }
