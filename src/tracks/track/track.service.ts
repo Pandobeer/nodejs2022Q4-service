@@ -8,11 +8,11 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class TrackService {
   constructor(
-    @InjectRepository(TrackEntity) private readonly trackRepository: Repository<TrackEntity>
-  ) { }
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>,
+  ) {}
 
   async create(createTrackDto: CreateTrackDto) {
-
     const newTrack = this.trackRepository.create({
       ...createTrackDto,
     });
@@ -44,14 +44,15 @@ export class TrackService {
   async update(id: string, updateTrackDto: UpdateTrackDto) {
     const trackToUpdate = await this.findOne(id);
 
-    return await this.trackRepository.save({ ...trackToUpdate, ...updateTrackDto });
+    return await this.trackRepository.save({
+      ...trackToUpdate,
+      ...updateTrackDto,
+    });
   }
 
   async delete(id: string) {
-
     const trackToDelete = await this.findOne(id);
 
     return await this.trackRepository.delete(trackToDelete.id);
-
   }
 }

@@ -20,14 +20,13 @@ import { ApiTags } from '@nestjs/swagger/dist';
 @ApiTags('Artists')
 @Controller('artist')
 export class ArtistController {
-  constructor(private readonly artistService: ArtistService) { }
+  constructor(private readonly artistService: ArtistService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createArtistDto: CreateArtistDto) {
-
     return this.artistService.create(createArtistDto);
   }
 
@@ -40,7 +39,6 @@ export class ArtistController {
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.artistService.findOne(id);
   }
 
@@ -50,14 +48,12 @@ export class ArtistController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-
     return this.artistService.update(id, updateArtistDto);
   }
 
   @Delete('/:id')
   @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.artistService.delete(id);
   }
 }

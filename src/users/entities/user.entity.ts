@@ -1,6 +1,13 @@
 import { Exclude, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  VersionColumn,
+} from 'typeorm';
 
 @Entity({ name: 'users' })
 export class UserEntity {

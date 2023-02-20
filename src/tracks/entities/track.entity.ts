@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
-import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
 import { AlbumEntity, ArtistEntity } from '../../typeorm';
-// import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'tracks' })
 export class TrackEntity {
@@ -20,7 +19,6 @@ export class TrackEntity {
 
   @ManyToOne(() => ArtistEntity, (artist) => artist.tracks, {
     onDelete: 'SET NULL',
-    // createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'artistId' })
   artist: ArtistEntity;
@@ -31,7 +29,6 @@ export class TrackEntity {
 
   @ManyToOne(() => AlbumEntity, (album) => album.tracks, {
     onDelete: 'SET NULL',
-    // createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'albumId' })
   album: AlbumEntity;
@@ -39,17 +36,6 @@ export class TrackEntity {
   @ApiProperty({ example: 262 })
   @Column({ nullable: false })
   duration: number;
-
-  // @ManyToMany(() => FavoriteEntity, (favorite) => favorite.tracks, {
-  // @ManyToMany(() => FavoriteEntity, (favorite) => favorite.tracks, {
-  //   eager: true,
-  //   cascade: true,
-  //   onDelete: 'CASCADE'
-  //   // orphanedRowAction: "delete"
-  // })
-  // // @JoinTable()
-  // @Exclude()
-  // favorites: FavoriteEntity[];
 
   constructor(entity: Partial<TrackEntity>) {
     Object.assign(this, entity);

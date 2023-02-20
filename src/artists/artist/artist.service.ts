@@ -8,8 +8,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 @Injectable()
 export class ArtistService {
   constructor(
-    @InjectRepository(ArtistEntity) private readonly artistRepository: Repository<ArtistEntity>
-  ) { }
+    @InjectRepository(ArtistEntity)
+    private readonly artistRepository: Repository<ArtistEntity>,
+  ) {}
 
   async create(createArtistDto: CreateArtistDto) {
     const newArtist = this.artistRepository.create({

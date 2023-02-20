@@ -16,4 +16,4 @@ import { ArtistEntity } from 'src/typeorm';
   providers: [ArtistService],
   exports: [ArtistService],
 })
-export class ArtistModule { }
+export class ArtistModule {}

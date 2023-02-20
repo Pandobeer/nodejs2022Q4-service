@@ -14,8 +14,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 const typeOrmConfigOptions = {
   imports: [ConfigModule.forRoot({ load: [pgdb] })],
-  useFactory: async (configService: ConfigService) =>
-    configService.get('pgdb'),
+  useFactory: async (configService: ConfigService) => configService.get('pgdb'),
   dataSourceFactory: async (options: DataSourceOptions) =>
     new DataSource(options).initialize(),
   inject: [ConfigService],
@@ -34,4 +33,4 @@ const typeOrmConfigOptions = {
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

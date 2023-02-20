@@ -9,11 +9,11 @@ import { UserEntity } from 'src/typeorm';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
-  ) { }
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
   createUser(createUserDto: CreateUserDto) {
-
     const newUser = this.userRepository.create({
       ...createUserDto,
     });
@@ -68,5 +68,4 @@ export class UserService {
 
     return this.userRepository.delete(id);
   }
-
 }

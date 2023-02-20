@@ -20,7 +20,7 @@ import { ApiTags } from '@nestjs/swagger/dist';
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
@@ -39,7 +39,6 @@ export class UserController {
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.userService.findOne(id);
   }
 
@@ -50,15 +49,12 @@ export class UserController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete('/:id')
   @HttpCode(204)
-  // @UsePipes(new ValidationPipe({ whitelist: true }))
   remove(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.userService.delete(id);
   }
 }

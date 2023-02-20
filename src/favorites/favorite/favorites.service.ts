@@ -1,18 +1,26 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
-import { FavoriteEntity, TrackEntity, AlbumEntity, ArtistEntity } from 'src/typeorm';
+import {
+  FavoriteEntity,
+  TrackEntity,
+  AlbumEntity,
+  ArtistEntity,
+} from 'src/typeorm';
 import { FavoritesResponseEntity } from './../entities/favorites-response.entity';
 
 @Injectable()
 export class FavoritesService {
-
   constructor(
-    @InjectRepository(FavoriteEntity) private readonly favoritesRepository: Repository<FavoriteEntity>,
-    @InjectRepository(TrackEntity) private readonly trackRepository: Repository<TrackEntity>,
-    @InjectRepository(AlbumEntity) private readonly albumRepository: Repository<AlbumEntity>,
-    @InjectRepository(ArtistEntity) private readonly artistRepository: Repository<ArtistEntity>,
-  ) { }
+    @InjectRepository(FavoriteEntity)
+    private readonly favoritesRepository: Repository<FavoriteEntity>,
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>,
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
+    @InjectRepository(ArtistEntity)
+    private readonly artistRepository: Repository<ArtistEntity>,
+  ) {}
 
   async initFavorites() {
     let favorites = (await this.favoritesRepository.find())[0];
@@ -28,7 +36,6 @@ export class FavoritesService {
   }
 
   async createFavTrack(id: string) {
-
     const favorites = await this.initFavorites();
 
     const favTrack = await this.trackRepository.findOneBy({ id });
@@ -63,7 +70,9 @@ export class FavoritesService {
     if (!favAlbumsIds.includes(favAlbum.id)) {
       favAlbumsIds.push(favAlbum.id);
 
-      await this.favoritesRepository.update(favorites.id, { albumsIds: favAlbumsIds });
+      await this.favoritesRepository.update(favorites.id, {
+        albumsIds: favAlbumsIds,
+      });
     }
 
     return `Album with id ${id} was successfully added to favourite albums`;
@@ -86,14 +95,15 @@ export class FavoritesService {
     if (!favArtistsIds.includes(favArtist.id)) {
       favArtistsIds.push(favArtist.id);
 
-      await this.favoritesRepository.update(favorites.id, { artistsIds: favArtistsIds });
+      await this.favoritesRepository.update(favorites.id, {
+        artistsIds: favArtistsIds,
+      });
     }
 
     return `Artist with id ${id} was successfully added to favourite artists`;
   }
 
   async getAll() {
-
     const [favorite] = await this.favoritesRepository.find();
     console.log(favorite);
 
@@ -121,7 +131,6 @@ export class FavoritesService {
   }
 
   async deleteTrack(trackIdToDel: string) {
-
     const favorites = await this.initFavorites();
 
     let favTracksIds = favorites.tracksIds;
@@ -133,15 +142,16 @@ export class FavoritesService {
       );
     }
 
-    favTracksIds = favTracksIds.filter(id => id !== trackIdToDel);
+    favTracksIds = favTracksIds.filter((id) => id !== trackIdToDel);
 
-    await this.favoritesRepository.update(favorites.id, { tracksIds: favTracksIds });
+    await this.favoritesRepository.update(favorites.id, {
+      tracksIds: favTracksIds,
+    });
 
     return `Album with id ${trackIdToDel} was successfully deleted from favourite albums`;
   }
 
   async deleteAlbum(albumIdToDel: string) {
-
     const favorites = await this.initFavorites();
 
     let favAlbumsIds = favorites.albumsIds;
@@ -152,15 +162,16 @@ export class FavoritesService {
         HttpStatus.NOT_FOUND,
       );
     }
-    favAlbumsIds = favAlbumsIds.filter(id => id !== albumIdToDel);
+    favAlbumsIds = favAlbumsIds.filter((id) => id !== albumIdToDel);
 
-    await this.favoritesRepository.update(favorites.id, { albumsIds: favAlbumsIds });
+    await this.favoritesRepository.update(favorites.id, {
+      albumsIds: favAlbumsIds,
+    });
 
     return `Album with id ${albumIdToDel} was successfully deleted from favourite albums`;
   }
 
   async deleteArtist(artistIdToDel: string) {
-
     const favorites = await this.initFavorites();
 
     let favArtistsIds = favorites.artistsIds;
@@ -172,9 +183,13 @@ export class FavoritesService {
       );
     }
 
-    favArtistsIds = favArtistsIds.filter(id => id !== artistIdToDel || id === null);
+    favArtistsIds = favArtistsIds.filter(
+      (id) => id !== artistIdToDel || id === null,
+    );
 
-    await this.favoritesRepository.update(favorites.id, { artistsIds: favArtistsIds });
+    await this.favoritesRepository.update(favorites.id, {
+      artistsIds: favArtistsIds,
+    });
 
     return `Artist with id ${artistIdToDel} was successfully deleted from favourite albums`;
   }

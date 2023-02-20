@@ -5,12 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AlbumEntity } from 'src/typeorm';
 import { Repository } from 'typeorm';
 
-
 @Injectable()
 export class AlbumsService {
   constructor(
-    @InjectRepository(AlbumEntity) private readonly albumRepository: Repository<AlbumEntity>
-  ) { }
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
+  ) {}
 
   async create(createAlbumDto: CreateAlbumDto) {
     const newAlbum = this.albumRepository.create({

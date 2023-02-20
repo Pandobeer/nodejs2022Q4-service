@@ -18,7 +18,7 @@ import { ApiTags } from '@nestjs/swagger/dist';
 @ApiTags('Albums')
 @Controller('album')
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService) { }
+  constructor(private readonly albumsService: AlbumsService) {}
 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -34,7 +34,6 @@ export class AlbumsController {
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.albumsService.findOne(id);
   }
 
@@ -44,7 +43,6 @@ export class AlbumsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-
     return this.albumsService.update(id, updateAlbumDto);
   }
 

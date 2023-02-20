@@ -20,14 +20,13 @@ import { ApiTags } from '@nestjs/swagger/dist';
 @ApiTags('Tracks')
 @Controller('track')
 export class TrackController {
-  constructor(private readonly trackService: TrackService) { }
+  constructor(private readonly trackService: TrackService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createTrackDto: CreateTrackDto) {
-
     return this.trackService.create(createTrackDto);
   }
 
@@ -40,7 +39,6 @@ export class TrackController {
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.trackService.findOne(id);
   }
 
@@ -50,14 +48,12 @@ export class TrackController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-
     return this.trackService.update(id, updateTrackDto);
   }
 
   @Delete('/:id')
   @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.trackService.delete(id);
   }
 }

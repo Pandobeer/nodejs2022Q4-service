@@ -3,7 +3,7 @@ import { PrimaryGeneratedColumn, Entity, OneToMany } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
 import { AlbumEntity, TrackEntity } from '../../typeorm';
 
-@Entity({ name: "artists" })
+@Entity({ name: 'artists' })
 export class ArtistEntity {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ format: 'uuid' })
@@ -17,23 +17,11 @@ export class ArtistEntity {
   @Column({ nullable: false })
   grammy: boolean;
 
-  @OneToMany(() => AlbumEntity, (album) => album.artistId, {
-  })
+  @OneToMany(() => AlbumEntity, (album) => album.artistId, {})
   albums: AlbumEntity[];
 
-  @OneToMany(() => TrackEntity, (track) => track.artistId, {
-  })
+  @OneToMany(() => TrackEntity, (track) => track.artistId, {})
   tracks: TrackEntity[];
-
-  // @ManyToMany(() => FavoriteEntity, (favorite) => favorite.artists, {
-  //   eager: true,
-  //   cascade: true,
-  //   onDelete: 'CASCADE'
-  //   // orphanedRowAction: "delete"
-  // })
-  // @JoinTable()
-  // @Exclude()
-  // favorites: FavoriteEntity[];
 
   constructor(entity: Partial<ArtistEntity>) {
     Object.assign(this, entity);
