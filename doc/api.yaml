@@ -1,11 +1,5 @@
+---
 openapi: 3.0.0
-info:
-  title: Home Library Service
-  description: Home music library service
-  version: 1.0.0
-
-servers:
-  - url: http://localhost:4000
 paths:
   '/':
     get:
@@ -40,7 +34,7 @@ paths:
       tags:
         - Users
     get:
-      operationId: UserController_getAll
+      operationId: UserController_getAllUsers
       parameters: []
       responses:
         '200':
@@ -265,7 +259,7 @@ paths:
           content:
             application/json:
               schema:
-                '$ref': '#/components/schemas/TrackEntity'
+                type: object
       tags:
         - Tracks
     delete:
@@ -401,6 +395,8 @@ paths:
             application/json:
               schema:
                 type: string
+        default:
+          description: Track was deleted succesfully
       tags:
         - Favs
   '/favs/album/{id}':
@@ -432,6 +428,12 @@ paths:
       responses:
         '204':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Album was deleted succesfully
       tags:
         - Favs
   '/favs/artist/{id}':
@@ -463,6 +465,12 @@ paths:
       responses:
         '204':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Artist was deleted succesfully
       tags:
         - Favs
   '/favs':
@@ -478,6 +486,13 @@ paths:
                 '$ref': '#/components/schemas/FavoritesResponseEntity'
       tags:
         - Favs
+info:
+  title: Home Library Service
+  description: Home music library service
+  version: v1
+  contact: {}
+tags: []
+servers: []
 components:
   schemas:
     CreateUserDto:
@@ -506,16 +521,19 @@ components:
           example: 1
         createdAt:
           type: number
-          example: 1234567
+          example: 1655000000
         updatedAt:
           type: number
-          example: 1234567
+          example: 1655000000
+        password:
+          type: string
       required:
         - id
         - login
         - version
         - createdAt
         - updatedAt
+        - password
     UpdateUserDto:
       type: object
       properties:
@@ -540,6 +558,40 @@ components:
       required:
         - name
         - grammy
+    TrackEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Hey Ho
+        artistId:
+          type: string
+          nullable: true
+          format: uuid
+          example:
+        albumId:
+          type: string
+          nullable: true
+          format: uuid
+          example:
+        duration:
+          type: number
+          example: 262
+        artist:
+          '$ref': '#/components/schemas/ArtistEntity'
+        album:
+          '$ref': '#/components/schemas/AlbumEntity'
+      required:
+        - id
+        - name
+        - artistId
+        - albumId
+        - duration
+        - artist
+        - album
     ArtistEntity:
       type: object
       properties:
@@ -552,10 +604,50 @@ components:
         grammy:
           type: boolean
           example: false
+        albums:
+          type: array
+          items:
+            '$ref': '#/components/schemas/AlbumEntity'
+        tracks:
+          type: array
+          items:
+            '$ref': '#/components/schemas/TrackEntity'
       required:
         - id
         - name
         - grammy
+        - albums
+        - tracks
+    AlbumEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: The Best
+        year:
+          type: number
+          example: 2020
+        artistId:
+          type: string
+          nullable: true
+          format: uuid
+          example:
+        artist:
+          '$ref': '#/components/schemas/ArtistEntity'
+        tracks:
+          type: array
+          items:
+            '$ref': '#/components/schemas/TrackEntity'
+      required:
+        - id
+        - name
+        - year
+        - artistId
+        - artist
+        - tracks
     UpdateArtistDto:
       type: object
       properties:
@@ -589,34 +681,6 @@ components:
         - duration
         - artistId
         - albumId
-    TrackEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          example: Hey Ho
-        artistId:
-          type: string
-          nullable: true
-          format: uuid
-          example:
-        albumId:
-          type: string
-          nullable: true
-          format: uuid
-          example:
-        duration:
-          type: number
-          example: 262
-      required:
-        - id
-        - name
-        - artistId
-        - albumId
-        - duration
     UpdateTrackDto:
       type: object
       properties:
@@ -651,28 +715,6 @@ components:
           format: uuid
           example:
       required:
-        - name
-        - year
-        - artistId
-    AlbumEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          example: The Best
-        year:
-          type: number
-          example: 2020
-        artistId:
-          type: string
-          nullable: true
-          format: uuid
-          example:
-      required:
-        - id
         - name
         - year
         - artistId
