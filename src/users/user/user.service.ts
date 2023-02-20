@@ -1,33 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+
 import { CreateUserDto } from './../dto/create-user.dto';
 import { UpdateUserDto } from './../dto/update-user.dto';
-import InMemoryUsersStorage from './../store/users.storage';
+import { UserEntity } from 'src/typeorm';
 
 @Injectable()
 export class UserService {
-  constructor(private usersStore: InMemoryUsersStorage) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.usersStore.create(createUserDto);
+  createUser(createUserDto: CreateUserDto) {
+    const newUser = this.userRepository.create({
+      ...createUserDto,
+    });
+    return this.userRepository.save(newUser);
   }
 
-  getAllUsers() {
-    return this.usersStore.getAll();
+  async getAllUsers() {
+    const users = await this.userRepository.find();
+
+    return users;
   }
 
-  findOne(id: string) {
-    return this.usersStore.findById(id);
+  async findOne(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new HttpException(
+        `User with provided id does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.usersStore.update(id, updateUserDto);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
+
+    if (user.password !== updateUserDto.oldPassword) {
+      throw new HttpException(
+        `Old password is incorrect`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    Object.assign(user, { password: updateUserDto.newPassword });
+
+    await this.userRepository.save(user);
+
+    return user;
   }
 
-  remove(id: string) {
-    return this.usersStore.delete(id);
-  }
+  async delete(id: string) {
+    const userToDelete = await this.userRepository.findOneBy({ id });
 
-  delete(id: string): void {
-    this.usersStore.delete(id);
+    if (!userToDelete) {
+      throw new HttpException(
+        `User with provided id does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.userRepository.delete(id);
   }
 }

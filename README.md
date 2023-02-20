@@ -38,7 +38,7 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 docker build . -t docker-basics-node
 ```
 
-## Running docker app database image:
+## Running docker app image:
 
 ```
 docker run -t -i -p 4000:4000 docker-basics-node
@@ -88,6 +88,20 @@ pushing db:
 3. docker push <dockerhub_username>/my-image:db
 , where my-image - is the name of repo to push in at Docker Hub
 
+```
+
+## Running migrations
+
+```
+npm run migrate:up
+
+Before running the script, please check, if the application container is running (docker-compose up -d)
+```
+
+Reverting migrations (each migration by one time)
+
+```
+npm run migrate:down
 ```
 
 ## Testing

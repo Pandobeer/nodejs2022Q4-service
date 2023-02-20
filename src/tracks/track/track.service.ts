@@ -1,41 +1,58 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateTrackDto } from '../dto/create-track.dto';
 import { UpdateTrackDto } from '../dto/update-track.dto';
-import InMemoryTracksStorage from '../store/tracks.storage';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TrackEntity } from 'src/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
-  constructor(private trackStore: InMemoryTracksStorage) {}
+  constructor(
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>,
+  ) {}
 
-  create(createTrackDto: CreateTrackDto) {
-    return this.trackStore.create(createTrackDto);
+  async create(createTrackDto: CreateTrackDto) {
+    const newTrack = this.trackRepository.create({
+      ...createTrackDto,
+    });
+
+    await this.trackRepository.save(newTrack);
+
+    return newTrack;
   }
 
-  getAllTracks() {
-    return this.trackStore.getAll();
+  async getAllTracks() {
+    const tracks = await this.trackRepository.find();
+
+    return tracks;
   }
 
-  findOne(id: string) {
-    return this.trackStore.findById(id);
+  async findOne(id: string) {
+    const track = await this.trackRepository.findOneBy({ id });
+
+    if (!track) {
+      throw new HttpException(
+        `Track with provided id does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return track;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    return this.trackStore.update(id, updateTrackDto);
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const trackToUpdate = await this.findOne(id);
+
+    return await this.trackRepository.save({
+      ...trackToUpdate,
+      ...updateTrackDto,
+    });
   }
 
-  remove(id: string) {
-    this.trackStore.delete(id);
-  }
+  async delete(id: string) {
+    const trackToDelete = await this.findOne(id);
 
-  delete(id: string): void {
-    this.trackStore.delete(id);
-  }
-
-  updateArtistIdsInTracks(artistId: string) {
-    this.trackStore.updateArtistIdsInTracks(artistId);
-  }
-
-  updateAlbumIds(albumId: string) {
-    this.trackStore.updateAlbumIds(albumId);
+    return await this.trackRepository.delete(trackToDelete.id);
   }
 }

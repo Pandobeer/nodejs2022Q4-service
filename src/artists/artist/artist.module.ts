@@ -3,12 +3,17 @@ import { AlbumsModule } from 'src/albums/album/albums.module';
 import { TrackModule } from 'src/tracks/track/track.module';
 import { ArtistController } from './artist.controller';
 import { ArtistService } from './artist.service';
-import InMemoryArtistsStorage from '../store/artists.storage';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ArtistEntity } from 'src/typeorm';
 
 @Module({
-  imports: [forwardRef(() => TrackModule), forwardRef(() => AlbumsModule)],
+  imports: [
+    forwardRef(() => TrackModule),
+    forwardRef(() => AlbumsModule),
+    TypeOrmModule.forFeature([ArtistEntity]),
+  ],
   controllers: [ArtistController],
-  providers: [ArtistService, InMemoryArtistsStorage],
+  providers: [ArtistService],
   exports: [ArtistService],
 })
 export class ArtistModule {}

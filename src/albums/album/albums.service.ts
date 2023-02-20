@@ -1,33 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from '../dto/create-album.dto';
 import { UpdateAlbumDto } from '../dto/update-album.dto';
-import InMemoryAlbumsStorage from '../store/albums.storage';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AlbumEntity } from 'src/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private albumsStore: InMemoryAlbumsStorage) {}
+  constructor(
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
+  ) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
-    return this.albumsStore.create(createAlbumDto);
+  async create(createAlbumDto: CreateAlbumDto) {
+    const newAlbum = this.albumRepository.create({
+      ...createAlbumDto,
+    });
+
+    await this.albumRepository.save(newAlbum);
+
+    return newAlbum;
   }
 
-  findAll() {
-    return this.albumsStore.getAll();
+  async getAllAlbums() {
+    const albums = await this.albumRepository.find();
+
+    return albums;
   }
 
-  findOne(id: string) {
-    return this.albumsStore.findById(id);
+  async findOne(id: string) {
+    const album = await this.albumRepository.findOneBy({ id });
+
+    if (!album) {
+      throw new HttpException(
+        `Album with provided id does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return album;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    return this.albumsStore.update(id, updateAlbumDto);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    const albumToUpdate = await this.findOne(id);
+
+    Object.assign(albumToUpdate, updateAlbumDto);
+
+    await this.albumRepository.save(albumToUpdate);
+
+    return albumToUpdate;
   }
 
-  remove(id: string) {
-    this.albumsStore.delete(id);
-  }
+  async delete(id: string) {
+    // const albumToDelete = await this.findOne(id);
+    const albumToDelete = await this.albumRepository.findOneBy({ id });
 
-  updateArtistIdsInAlbums(artistId: string) {
-    this.albumsStore.updateArtistIdsInAlbums(artistId);
+    if (!albumToDelete) {
+      throw new HttpException(
+        `Album with provided id does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.albumRepository.remove(albumToDelete);
   }
 }

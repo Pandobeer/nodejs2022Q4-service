@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 
 export class CreateTrackDto {
   @ApiProperty({ example: 'Hey Ho' })
-  @IsString()
+  @IsString({ message: 'Track name must be a string' })
   name: string;
 
   @ApiProperty({ example: 262 })
