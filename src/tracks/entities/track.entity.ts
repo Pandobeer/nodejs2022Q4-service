@@ -18,7 +18,7 @@ export class TrackEntity {
   artistId: string | null;
 
   @ManyToOne(() => ArtistEntity, {
-    onDelete: 'SET NULL'
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'artistId', referencedColumnName: 'id' })
   artist: ArtistEntity;
@@ -28,7 +28,7 @@ export class TrackEntity {
   albumId: string | null;
 
   @ManyToOne(() => AlbumEntity, {
-    onDelete: 'SET NULL'
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'albumId', referencedColumnName: 'id' })
   album: AlbumEntity;
