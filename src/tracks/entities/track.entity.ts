@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
-import { AlbumEntity, ArtistEntity, FavoriteEntity } from 'src/typeorm';
-import { Exclude } from 'class-transformer';
+import { AlbumEntity, ArtistEntity } from '../../typeorm';
+// import { Exclude } from 'class-transformer';
 
-@Entity()
+@Entity({ name: 'tracks' })
 export class TrackEntity {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ format: 'uuid' })
@@ -15,7 +15,7 @@ export class TrackEntity {
   name: string;
 
   @ApiProperty({ format: 'uuid', example: null })
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   artistId: string | null;
 
   @ManyToOne(() => ArtistEntity, (artist) => artist.tracks, {
@@ -26,7 +26,7 @@ export class TrackEntity {
   artist: ArtistEntity;
 
   @ApiProperty({ format: 'uuid', example: null })
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   albumId: string | null;
 
   @ManyToOne(() => AlbumEntity, (album) => album.tracks, {

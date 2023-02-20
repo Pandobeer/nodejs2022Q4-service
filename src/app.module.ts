@@ -7,10 +7,19 @@ import { TrackModule } from './tracks/track/track.module';
 import { AlbumsModule } from './albums/album/albums.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { ConfigService } from '@nestjs/config';
-// import entities from './typeorm/index';
+import { ConfigService } from '@nestjs/config';
 import { FavoritesModule } from './favorites/favorite/favorites.module';
-import { dataSourceOptions } from './typeorm/typeorm.config';
+import { pgdb } from './typeorm/typeorm.config';
+import { DataSource, DataSourceOptions } from 'typeorm';
+
+const typeOrmConfigOptions = {
+  imports: [ConfigModule.forRoot({ load: [pgdb] })],
+  useFactory: async (configService: ConfigService) =>
+    configService.get('pgdb'),
+  dataSourceFactory: async (options: DataSourceOptions) =>
+    new DataSource(options).initialize(),
+  inject: [ConfigService],
+};
 
 @Module({
   imports: [
@@ -20,21 +29,7 @@ import { dataSourceOptions } from './typeorm/typeorm.config';
     AlbumsModule,
     FavoritesModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot(dataSourceOptions),
-    // // TypeOrmModule.forRootAsync({
-    // //   imports: [ConfigModule],
-    // //   useFactory: (configService: ConfigService) => ({
-    // //     type: 'postgres',
-    // //     host: 'db',
-    // //     port: configService.get<number>('POSTGRES_PORT'),
-    // //     username: configService.get('POSTGRES_USER'),
-    // //     password: configService.get('POSTGRES_PASSWORD'),
-    // //     database: configService.get('POSTGRES_DB'),
-    // //     entities: entities,
-    // //     synchronize: true,
-    // //   }),
-    // //   inject: [ConfigService],
-    // }),
+    TypeOrmModule.forRootAsync(typeOrmConfigOptions),
   ],
   controllers: [AppController],
   providers: [AppService],

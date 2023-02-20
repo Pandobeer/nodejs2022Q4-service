@@ -1,19 +1,13 @@
-// import { ConfigModule, ConfigService } from "@nestjs/config";
-import { DataSource, DataSourceOptions } from "typeorm";
+import { DataSource } from "typeorm";
 import entities from '.';
 
-import { config } from 'dotenv';
+import * as dotenv from 'dotenv';
+import { registerAs } from "@nestjs/config";
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
-config();
+dotenv.config();
 
-// export const dataSourceOptions = {
-//     imports: [ConfigModule.forRoot({ load: [database] })],
-//     useFactory: async (configService: ConfigService) => configService.get('database'),
-//     dataSourceFactory: async (options: DataSourceOptions) => new DataSource(options).initialize(),
-//     inject: [ConfigService],
-// };
-
-export const dataSourceOptions: DataSourceOptions = {
+export const configOptions: PostgresConnectionOptions = {
     type: 'postgres',
     host: process.env.POSTGRES_HOST,
     port: +process.env.POSTGRES_PORT,
@@ -22,18 +16,17 @@ export const dataSourceOptions: DataSourceOptions = {
     username: process.env.POSTGRES_USER,
     entities: entities,
     migrationsTableName: 'migrations',
-    synchronize: false,
-    migrationsRun: true,
+    synchronize: true,
+    // migrationsRun: true,
     migrations: ['dist/typeorm/migrations/*{.ts,.js}'],
-    // cli: { migrationsDir: 'src/typeorm/migrations' },
     parseInt8: true,
     logging: true,
 };
 
-const dataSource = new DataSource(dataSourceOptions);
+const dataSource = new DataSource(configOptions);
 export default dataSource;
 
-    // export const database = registerAs(
-    //     'database',
-    //     (): PostgresConnectionOptions => config,
-    //   );
+export const pgdb = registerAs(
+    'pgdb',
+    (): PostgresConnectionOptions => configOptions,
+);

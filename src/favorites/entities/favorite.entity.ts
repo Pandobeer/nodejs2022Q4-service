@@ -5,9 +5,9 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { TrackEntity, AlbumEntity, ArtistEntity } from 'src/typeorm';
+import { TrackEntity, AlbumEntity, ArtistEntity } from '../../typeorm';
 
-@Entity()
+@Entity({ name: 'favorites' })
 export class FavoriteEntity {
   @PrimaryGeneratedColumn()
   id: string;
@@ -28,6 +28,7 @@ export class FavoriteEntity {
   artists: ArtistEntity[];
 
   @ManyToMany(() => AlbumEntity, (album) => album.id, {
+    cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinTable()
