@@ -1,23 +1,34 @@
-import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
+import { HttpException, Injectable, HttpStatus, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateUserDto } from './../dto/create-user.dto';
 import { UpdateUserDto } from './../dto/update-user.dto';
 import { UserEntity } from 'src/typeorm';
+import { MyLogger } from 'src/logger/logger.servise';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
+    // private readonly loggingService: MyLogger,
+  ) { }
 
-  createUser(createUserDto: CreateUserDto) {
+  // private readonly logger = new Logger(UserService.name);
+
+  async createUser(createUserDto: CreateUserDto) {
+    // this.loggingService.log(`Request body: ${JSON.stringify(createUserDto)}`);
+
     const newUser = this.userRepository.create({
       ...createUserDto,
     });
-    return this.userRepository.save(newUser);
+
+    const result = await this.userRepository.save(newUser);
+
+    // this.loggingService.log(`Response: ${JSON.stringify(result)}`);
+
+    return result;
   }
 
   async getAllUsers() {

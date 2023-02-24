@@ -20,7 +20,7 @@ import { ApiTags } from '@nestjs/swagger/dist';
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
