@@ -1,6 +1,7 @@
-import { HttpException, Injectable, HttpStatus, Logger } from '@nestjs/common';
+import { HttpException, Injectable, HttpStatus, Logger, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcryptjs';
 
 import { CreateUserDto } from './../dto/create-user.dto';
 import { UpdateUserDto } from './../dto/update-user.dto';
@@ -20,15 +21,18 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto) {
     // this.loggingService.log(`Request body: ${JSON.stringify(createUserDto)}`);
 
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
     const newUser = this.userRepository.create({
       ...createUserDto,
+      password: hashedPassword
     });
 
-    const result = await this.userRepository.save(newUser);
+    return await this.userRepository.save(newUser);
 
     // this.loggingService.log(`Response: ${JSON.stringify(result)}`);
 
-    return result;
+    // return result;
   }
 
   async getAllUsers() {
@@ -41,10 +45,26 @@ export class UserService {
     const user = await this.userRepository.findOneBy({ id });
 
     if (!user) {
-      throw new HttpException(
+      throw new NotFoundException(
         `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
+        // HttpStatus.NOT_FOUND,
       );
+    }
+
+    return user;
+  }
+
+  async findOneByLogin(login: string) {
+    const user = await this.userRepository.findOneBy({ login });
+
+    if (!user) {
+      throw new ForbiddenException(
+        `User with provided login was not found`,
+      );
+      // throw new HttpException(
+      //   `User with provided login was not found`,
+      //   HttpStatus.BAD_REQUEST
+      // );
     }
 
     return user;
@@ -54,9 +74,11 @@ export class UserService {
     const user = await this.findOne(id);
 
     if (user.password !== updateUserDto.oldPassword) {
-      throw new HttpException(
+      throw new ForbiddenException(
+        // throw new ForbiddenException(
+
         `Old password is incorrect`,
-        HttpStatus.FORBIDDEN,
+        // HttpStatus.FORBIDDEN,
       );
     }
 
@@ -71,12 +93,16 @@ export class UserService {
     const userToDelete = await this.userRepository.findOneBy({ id });
 
     if (!userToDelete) {
-      throw new HttpException(
+      throw new NotFoundException(
         `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
+        // HttpStatus.NOT_FOUND,
       );
     }
 
     return this.userRepository.delete(id);
+  }
+
+  async saveRefreshToken(userId: string, updRefreshToken: string) {
+
   }
 }

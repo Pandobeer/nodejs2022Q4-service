@@ -9,10 +9,11 @@ dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // bufferLogs: true,
-    // logger: false
+    // logger: levels
   });
 
   app.enableCors();
@@ -40,5 +41,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(PORT);
+
+  // throw new Error('Oops!');
+
 }
-bootstrap();
+bootstrap();;

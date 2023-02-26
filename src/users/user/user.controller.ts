@@ -32,7 +32,12 @@ export class UserController {
 
   @Get()
   getAllUsers() {
+    // this.findOne("a");
+    // const response = undefined;
+    // console.log(response.data);
+
     return this.userService.getAllUsers();
+    // throw Error('Test uncaught exception');
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

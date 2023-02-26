@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
+import { ValidateIf } from 'class-validator';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -36,6 +37,10 @@ export class UserEntity {
   @UpdateDateColumn()
   @Transform(({ value }) => new Date(value).getTime())
   updatedAt: number;
+
+  @Column({ nullable: true })
+  @ValidateIf((_object, value) => value !== null)
+  refreshToken: string | null;
 
   constructor(entity: Partial<UserEntity>) {
     Object.assign(this, entity);
