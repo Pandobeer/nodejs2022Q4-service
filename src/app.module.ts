@@ -17,6 +17,7 @@ import { LoggerMidleware } from './logger/logger.middleware';
 import { LoggerModule } from './logger/logger.module';
 import { CustomExceptionFilter } from './exception-filter/exception.filter';
 // import { LoggerModule } from './logger/logger.module';
+import { AuthModule } from './auth/auth.module';
 
 const typeOrmConfigOptions = {
   imports: [ConfigModule.forRoot({ load: [pgdb] })],
@@ -36,6 +37,7 @@ const typeOrmConfigOptions = {
     LoggerModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmConfigOptions),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService,
