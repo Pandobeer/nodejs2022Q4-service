@@ -7,14 +7,16 @@ import { MyLogger } from "./logger.servise";
 @Injectable()
 export class LoggerMidleware implements NestMiddleware {
     constructor(
-        private readonly logger: MyLogger) { }
+        private readonly loggingService: MyLogger) { }
 
     // private logger = new Logger(`HTTP`);
 
     use(req: Request, res: Response, next: NextFunction) {
-        const { method, originalUrl, body, query } = req;
+        const { method, originalUrl: url, body, query } = req;
 
-        this.logger.log(`Logging request: ${method}, URL: ${originalUrl}, Query: ${JSON.stringify(query)}, Body: ${JSON.stringify(body)}`);
+        // this.loggingService.error('error');
+        this.loggingService.log(`Logging request: ${method}, URL: ${url}, Query: ${JSON.stringify(query)}, Body: ${JSON.stringify(body)}`);
+
         // this.logger.log(`URL: ${originalUrl}`);
         // this.logger.log(`Query: ${JSON.stringify(query)}`);
         // this.logger.log(`Body: ${JSON.stringify(body)}`);
@@ -22,7 +24,9 @@ export class LoggerMidleware implements NestMiddleware {
         res.on('finish', () => {
             const { statusCode } = res;
 
-            this.logger.log(`Status code: ${statusCode}`);
+
+            // this.loggingService.error('error');
+            this.loggingService.log(`Status code: ${statusCode}`);
         });
 
         next();
