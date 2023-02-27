@@ -17,7 +17,7 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async use(req: AuthRequest, res: Response, next: NextFunction) {
     const pathsToExclude = ['/auth/signup', '/auth/login', '/doc', '/'];

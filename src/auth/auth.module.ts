@@ -28,11 +28,12 @@ config();
       },
     }),
   ],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule,],
   // TypeOrmModule.forFeature([UserEntity])
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    //TODO: please comment out the consumer and the foolwing code to run script npm run:test 
     consumer
       .apply(AuthMiddleware)
       .exclude({ path: '/auth/signup', method: RequestMethod.POST })

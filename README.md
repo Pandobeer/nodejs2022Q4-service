@@ -22,93 +22,36 @@ npm install --legacy-peer-deps
 ** create .env file using .env.example as a pattern.
 Service should listen on PORT 4000 by default, PORT value is stored in .env file. **
 
-## Running application
-
-```
-npm start
-```
-
-After starting the app on port (4000 as default) you can open POSTMAN or
-in your browser OpenAPI documentation by typing http://localhost:4000/api/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Create docker app image:
-
-```
-docker build . -t docker-basics-node
-```
-
-## Running docker app image:
-
-```
-docker run -t -i -p 4000:4000 docker-basics-node
-```
-
-## Create docker pg database image:
-
-```
-docker build ./database -t node-pg
-```
-
-## Running docker pg database image:
-
-```
-docker run -t -i -p 8001:8001 node-pg
-```
-
-or run in detached way:
-
-```
-docker run -t -i -d -p 8001:8001 node-pg
-```
-
 ## Running docker compose
 
 ```
 docker-compose up
 ```
 
-## Running scan built images:
+## Running application
 
-```
-npm run docker:scan
-```
-
-## Pushing images to dockerHub:
-
-```
-pushing app:
-1. docker login -u <dockerhub_username> -p <dockerhub_password>
-2. docker tag app:app <dockerhub_username>/my-image:app
-3. docker push <dockerhub_username>/my-image:app
-, where my-image - is the name of repo to push in at Docker Hub
-
-pushing db:
-2. docker tag db:db <dockerhub_username>/my-image:db
-3. docker push <dockerhub_username>/my-image:db
-, where my-image - is the name of repo to push in at Docker Hub
-
-```
-
-## Running migrations
-
-```
-npm run migrate:up
-
-Before running the script, please check, if the application container is running (docker-compose up -d)
-```
-
-Reverting migrations (each migration by one time)
-
-```
-npm run migrate:down
-```
+After starting the app on port (4000 as default) you can open POSTMAN (http://localhost:4000)
 
 ## Testing
 
 After application running open new terminal and enter:
+!!!!! If any tests are not passing, please try the script npm run test:auth once again.
 
-To run all tests without authorization
+To run all test with authorization
+
+```
+npm run test:auth
+```
+
+To run all tests without authorization, please comment out the following code in auth.module.ts:
+
+    consumer
+      .apply(AuthMiddleware)
+      .exclude({ path: '/auth/signup', method: RequestMethod.POST })
+      .exclude({ path: '/auth/login', method: RequestMethod.POST })
+      .exclude('/doc')
+      .exclude('/')
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
 
 ```
 npm run test
@@ -118,12 +61,6 @@ To run only one of all test suites
 
 ```
 npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
 ```
 
 To run only specific test suite with authorization
