@@ -2,6 +2,7 @@ import { Body, ClassSerializerInterceptor, Controller, HttpCode, Post, UseInterc
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ApiResponse } from '@nestjs/swagger/dist';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +17,7 @@ export class AuthController {
 
     @UseInterceptors(ClassSerializerInterceptor)
     @Post('/login')
+    @ApiResponse({ description: 'User successfully logged in' })
     @HttpCode(200)
     @UsePipes(new ValidationPipe({ whitelist: true }))
     login(@Body() loginUserDto: CreateUserDto) {

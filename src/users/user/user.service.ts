@@ -21,7 +21,7 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto) {
     // this.loggingService.log(`Request body: ${JSON.stringify(createUserDto)}`);
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, Number(process.env.CRYPT_SALT || 10));
 
     const newUser = this.userRepository.create({
       ...createUserDto,
@@ -73,7 +73,9 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.findOne(id);
 
-    if (user.password !== updateUserDto.oldPassword) {
+    const matchPasswords = await bcrypt.compare(updateUserDto.oldPassword, user.password);
+
+    if (!matchPasswords) {
       throw new ForbiddenException(
         // throw new ForbiddenException(
 
@@ -102,7 +104,14 @@ export class UserService {
     return this.userRepository.delete(id);
   }
 
-  async saveRefreshToken(userId: string, updRefreshToken: string) {
+  async updateRefreshToken(userId: string, updRefreshToken: string): Promise<void> {
+    const user = await this.userRepository.findOneByOrFail({ id: userId }).catch(() => {
+      throw new NotFoundException(`User with ID "${userId}" was not found`);
+    });
 
+    user.refreshToken = updRefreshToken;
+    console.log(10, user.refreshToken);
+
+    await this.userRepository.save(user);
   }
 }

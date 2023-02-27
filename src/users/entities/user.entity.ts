@@ -38,9 +38,10 @@ export class UserEntity {
   @Transform(({ value }) => new Date(value).getTime())
   updatedAt: number;
 
+  @ApiProperty({ example: '123' })
   @Column({ nullable: true })
   @ValidateIf((_object, value) => value !== null)
-  refreshToken: string | null;
+  refreshToken: string;
 
   constructor(entity: Partial<UserEntity>) {
     Object.assign(this, entity);
