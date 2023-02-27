@@ -20,7 +20,7 @@ import { ApiTags } from '@nestjs/swagger/dist';
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
@@ -32,12 +32,7 @@ export class UserController {
 
   @Get()
   getAllUsers() {
-    // this.findOne("a");
-    // const response = undefined;
-    // console.log(response.data);
-
     return this.userService.getAllUsers();
-    // throw Error('Test uncaught exception');
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

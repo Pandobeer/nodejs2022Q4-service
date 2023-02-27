@@ -1,9 +1,19 @@
-import { Body, ClassSerializerInterceptor, Controller, HttpCode, Post, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+    Body,
+    ClassSerializerInterceptor,
+    Controller,
+    HttpCode,
+    Post,
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { ApiResponse } from '@nestjs/swagger/dist';
+import { ApiResponse, ApiTags } from '@nestjs/swagger/dist';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
@@ -31,5 +41,4 @@ export class AuthController {
     refresh(@Body() refreshTokenDto: RefreshTokenDto) {
         return this.authService.refresh(refreshTokenDto);
     }
-
 }

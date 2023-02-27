@@ -40,16 +40,16 @@ const typeOrmConfigOptions = {
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
+    AppService,
     {
       provide: APP_FILTER,
       useClass: CustomExceptionFilter,
-    }],
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMidleware)
-      .forRoutes('*');
+    consumer.apply(LoggerMidleware).forRoutes('*');
   }
 }

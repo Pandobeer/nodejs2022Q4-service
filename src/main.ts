@@ -9,16 +9,12 @@ dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 
-
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    // bufferLogs: true,
-    // logger: levels
-  });
+  const app = await NestFactory.create(AppModule, {});
 
   app.enableCors();
 
-  const loggingService = (app.get(MyLogger));
+  const loggingService = app.get(MyLogger);
 
   process.on('uncaughtException', (error) => {
     loggingService.logUncaughtException(error);
@@ -40,4 +36,4 @@ async function bootstrap() {
 
   await app.listen(PORT);
 }
-bootstrap();;
+bootstrap();

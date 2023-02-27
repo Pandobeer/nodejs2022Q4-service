@@ -1,4 +1,4 @@
-import { LoggerService, Injectable, Logger, ConsoleLogger } from "@nestjs/common";
+import { LoggerService, Injectable, ConsoleLogger } from '@nestjs/common';
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -14,9 +14,7 @@ enum LoggingLevels {
 
 @Injectable()
 export class MyLogger extends ConsoleLogger implements LoggerService {
-
-    constructor(
-    ) {
+    constructor() {
         super();
         this.createLogFile();
     }
@@ -27,36 +25,17 @@ export class MyLogger extends ConsoleLogger implements LoggerService {
         fs.mkdirSync(logDir, { recursive: true });
 
         const logFilePath = path.join(logDir, 'logs.txt');
-        console.log(12, this.logFilePath);
 
         return logFilePath;
     }
 
     logFilePath = this.getpathToLogFile();
 
-    // makeNewFolder() {
-    //     const newFolderPath = path.join(__dirname, 'src', 'new_folder');
-    //     const newFilePath = path.join(newFolderPath, 'new_file.txt');
-
-    //     if (!fs.existsSync(newFolderPath)) {
-    //         fs.mkdirSync(newFolderPath);
-    //     }
-
-    //     fs.writeFileSync(newFilePath, 'Hello World!');
-    // }
-
     private logFileSizeInKB = +process.env.LOG_FILE_SIZE;
-
-    // private logContent = fs.readFileSync(this.logFilePath, 'utf-8');
 
     private readonly logLevel = process.env.LOG_LEVEL || 0;
 
-
     private writeLog(message: string, level: LoggingLevels) {
-
-        console.log(level, LoggingLevels[level]);
-        // this.makeNewFolder();
-
         if (level <= this.logLevel) {
             super[LoggingLevels[level].toLowerCase()](message);
 
@@ -65,7 +44,6 @@ export class MyLogger extends ConsoleLogger implements LoggerService {
     }
 
     private createLogFile() {
-        console.log(11, this.logFilePath);
 
         if (!fs.existsSync(this.logFilePath)) {
             fs.writeFileSync(this.logFilePath, '');
@@ -92,9 +70,6 @@ export class MyLogger extends ConsoleLogger implements LoggerService {
 
     public error(error: Error) {
         this.writeLog(error.message, LoggingLevels.ERROR);
-
-        // this.logger.error(`Stack trace: ${error.stack}`);
-        // this.logger.error(`Stack trace: ${trace}`);
     }
 
     public warn(message: string) {
@@ -105,14 +80,12 @@ export class MyLogger extends ConsoleLogger implements LoggerService {
         this.writeLog(message, LoggingLevels.LOG);
     }
 
-
     public debug(message: string) {
         this.writeLog(message, LoggingLevels.DEBUG);
     }
 
     public verbose(message: string) {
         this.writeLog(message, LoggingLevels.VERBOSE);
-
     }
 
     logUncaughtException(error: Error) {
@@ -120,7 +93,6 @@ export class MyLogger extends ConsoleLogger implements LoggerService {
         super.error(`Stack trace: ${error.stack}`);
 
         this.writeLog(error.message, LoggingLevels.ERROR);
-
     }
 
     logUnhandledRejection(reason: any, promise: Promise<any>) {
