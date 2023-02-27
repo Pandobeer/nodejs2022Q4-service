@@ -19,8 +19,6 @@ async function bootstrap() {
   app.enableCors();
 
   const loggingService = (app.get(MyLogger));
-  // app.useLogger
-  // app.useLogger(new MyLogger());
 
   process.on('uncaughtException', (error) => {
     loggingService.logUncaughtException(error);
@@ -41,8 +39,5 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(PORT);
-
-  // throw new Error('Oops!');
-
 }
 bootstrap();;

@@ -2,91 +2,131 @@ import { LoggerService, Injectable, Logger, ConsoleLogger } from "@nestjs/common
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as dotenv from 'dotenv';
+import { Request, Response } from 'express';
+
+enum LoggingLevels {
+    ERROR = 0,
+    WARN = 1,
+    LOG = 2,
+    DEBUG = 3,
+    VERBOSE = 4,
+}
 
 @Injectable()
 export class MyLogger extends ConsoleLogger implements LoggerService {
 
     constructor(
-        private readonly level: string
     ) {
         super();
         this.createLogFile();
-        // if (process.env.LOG_LEVEL) {
-        //     this.level = process.env.LOG_LEVEL;
-        // }
-        dotenv.config();
     }
 
-    private logLevels = process.env.LOG_LEVEL || 'info';
+    public getpathToLogFile() {
+        const logDir = path.join(process.cwd(), 'logs');
 
-    // const logLevel = process.env.LOG_LEVEL;
-    // const debugLevel = process.env.DEBUG_LEVEL;
-    // const errorLevel = process.env.ERROR_LEVEL;
+        fs.mkdirSync(logDir, { recursive: true });
 
-    private logger = new Logger('LoggingService');
+        const logFilePath = path.join(logDir, 'logs.txt');
+        console.log(12, this.logFilePath);
 
-    private logFilePath = path.join(__dirname, 'app.log');
-    private logFileSizeInKB = 1000;
+        return logFilePath;
+    }
 
-    private logContent = fs.readFileSync(this.logFilePath, 'utf-8');
+    logFilePath = this.getpathToLogFile();
+
+    // makeNewFolder() {
+    //     const newFolderPath = path.join(__dirname, 'src', 'new_folder');
+    //     const newFilePath = path.join(newFolderPath, 'new_file.txt');
+
+    //     if (!fs.existsSync(newFolderPath)) {
+    //         fs.mkdirSync(newFolderPath);
+    //     }
+
+    //     fs.writeFileSync(newFilePath, 'Hello World!');
+    // }
+
+    private logFileSizeInKB = +process.env.LOG_FILE_SIZE;
+
+    // private logContent = fs.readFileSync(this.logFilePath, 'utf-8');
+
+    private readonly logLevel = process.env.LOG_LEVEL || 0;
+
+
+    private writeLog(message: string, level: LoggingLevels) {
+
+        console.log(level, LoggingLevels[level]);
+        // this.makeNewFolder();
+
+        if (level <= this.logLevel) {
+            super[LoggingLevels[level].toLowerCase()](message);
+
+            this.writeToFile(`[${LoggingLevels[level]}] ${message}\n`);
+        }
+    }
 
     private createLogFile() {
+        console.log(11, this.logFilePath);
 
         if (!fs.existsSync(this.logFilePath)) {
             fs.writeFileSync(this.logFilePath, '');
         }
     }
 
-    public log(message: string, context?: any) {
-        if (this.useLog('info')) {
-            super.log(`${message}`);
+    loggingRequest(req: Request, res: Response) {
+        const { method, originalUrl: url, query, body } = req;
 
-            this.writeToFile(`[INFO] ${message}`);
-        }
-        // process.stdout.write(`${message}, ${context}`);
+        const requestTimestamp = new Date().toISOString();
+        const requestMessage = `${requestTimestamp} Incoming request - ${method} ${url} - Query: ${JSON.stringify(
+            query,
+        )} - Body: ${JSON.stringify(body)}`;
+
+        super.log(requestMessage);
+
+        res.on('finish', () => {
+            const responseTimestamp = new Date().toISOString();
+            const responseMessage = `${responseTimestamp} Response: ${method} ${url} Response status code: ${res.statusCode}`;
+
+            super.log(responseMessage);
+        });
     }
 
     public error(error: Error) {
-        if (this.useLog('error')) {
-            this.logger.error(`Error occurred: ${error.message}`);
-            this.writeToFile(`[ERROR] ${error.message} ${error.stack}`);
-        }
+        this.writeLog(error.message, LoggingLevels.ERROR);
+
         // this.logger.error(`Stack trace: ${error.stack}`);
         // this.logger.error(`Stack trace: ${trace}`);
     }
 
-    public warn(message: string, context?: any) {
-        if (this.useLog('warn')) {
-            super.warn(`${message}`);
-
-            this.writeToFile(`[WARN] ${message}`);
-        }
+    public warn(message: string) {
+        this.writeLog(message, LoggingLevels.WARN);
     }
 
-    public debug(message: string, context?: any) {
-        if (this.useLog('debug')) {
-            super.debug(`[DEBUG] ${context ? `${context} - ` : ''}${message}`);
+    public log(message: string) {
+        this.writeLog(message, LoggingLevels.LOG);
+    }
 
-            this.writeToFile(`[DEBUG] ${context ? `${context} - ` : ''}${message}`);
-        }
+
+    public debug(message: string) {
+        this.writeLog(message, LoggingLevels.DEBUG);
+    }
+
+    public verbose(message: string) {
+        this.writeLog(message, LoggingLevels.VERBOSE);
+
     }
 
     logUncaughtException(error: Error) {
-        this.logger.error(`Uncaught exception occurred: ${error.message}`);
-        this.logger.error(`Stack trace: ${error.stack}`);
+        super.error(`Uncaught exception occurred: ${error.message}`);
+        super.error(`Stack trace: ${error.stack}`);
 
-        this.writeToFile(`[ERROR] ${error.message} ${error.stack}`);
+        this.writeLog(error.message, LoggingLevels.ERROR);
 
-        // this.logger.log('Hi, logUncaughtException');
     }
 
     logUnhandledRejection(reason: any, promise: Promise<any>) {
-        this.logger.error(`Unhandled rejection occurred: ${reason}`);
+        super.error(`Unhandled rejection occurred: ${reason}`);
 
         this.writeToFile(`[Unhandled rejection] : ${reason}`);
-
-        // this.logger.log('Hi, logUnhandledRejection');
     }
 
     writeToFile(log: string) {
@@ -95,16 +135,17 @@ export class MyLogger extends ConsoleLogger implements LoggerService {
         const logLine = `${timeStamp} - ${log}\n`;
 
         const stats = fs.statSync(this.logFilePath);
-        const fileSizeBt = stats.size;
-        const fileSizeKB = fileSizeBt / 1000;
 
-        if (fileSizeKB > this.logFileSizeInKB) {
+        const fileSizeBt = stats.size;
+        const fileSizeMB = fileSizeBt / 10000;
+
+        if (fileSizeMB > this.logFileSizeInKB) {
             this.rotateLogFile();
         }
 
         fs.appendFile(this.logFilePath, logLine, (error) => {
             if (error) {
-                this.logger.error(`Failed to write log to file ${error}`);
+                super.error(`Failed to write log to file ${error}`);
             }
         });
     }
@@ -116,28 +157,4 @@ export class MyLogger extends ConsoleLogger implements LoggerService {
 
         fs.renameSync(this.logFilePath, backupLogFilePath);
     }
-
-    private useLog(level: string): boolean {
-        return ['info', 'error', 'warn', 'debug'].indexOf(this.logLevels) >=
-            ['info', 'error', 'warn', 'debug'].indexOf(level);
-    }
-
-    // private useLog(level: string): boolean {
-
-
-    // error(message: any, trace?: string, context?: string) {
-    //     super.error(message, trace, context);
-    // }
-
-    //   warn(message: any, context?: string) {
-    //     super.warn(message, context);
-    //   }
-
-    //   debug(message: any, context?: string) {
-    //     super.debug(message, context);
-    //   }
-
-    //   verbose(message: any, context?: string) {
-    //     super.verbose(message, context);
-    //   }
 }

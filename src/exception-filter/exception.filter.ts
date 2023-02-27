@@ -9,7 +9,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
     ) { }
 
     catch(exception: Error, host: ArgumentsHost): void {
-        // super.catch(exception, host);
+
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const timeStamp = new Date().toISOString();
@@ -25,17 +25,11 @@ export class CustomExceptionFilter implements ExceptionFilter {
 
         this.loggingService.error(exception);
 
-
-        // this.loggingService.error(`Error: ${message}`);
-
         response.status(status).json({
             statusCode: status,
             message,
             path: request.url,
             timeStamp
         });
-
-        // process.stdout.write(`${status}, ${message}`);
-        // const status = exception.getStatus();
     }
 }
