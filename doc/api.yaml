@@ -490,6 +490,57 @@ paths:
                 '$ref': '#/components/schemas/FavoritesResponseEntity'
       tags:
         - Favs
+  '/auth/signup':
+    post:
+      operationId: AuthController_signup
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/CreateUserDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/UserEntity'
+      tags:
+        - Auth
+  '/auth/login':
+    post:
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/CreateUserDto'
+      responses:
+        '200':
+          description: ''
+        default:
+          description: User successfully logged in
+      tags:
+        - Auth
+  '/auth/refresh':
+    post:
+      operationId: AuthController_refresh
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/RefreshTokenDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Auth
 info:
   title: Home Library Service
   description: Home music library service
@@ -529,6 +580,9 @@ components:
         updatedAt:
           type: number
           example: 1655000000
+        refreshToken:
+          type: string
+          example: '123'
         password:
           type: string
       required:
@@ -537,6 +591,7 @@ components:
         - version
         - createdAt
         - updatedAt
+        - refreshToken
         - password
     UpdateUserDto:
       type: object
@@ -755,3 +810,11 @@ components:
         - artists
         - albums
         - tracks
+    RefreshTokenDto:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          example: '123'
+      required:
+        - refreshToken
