@@ -3,9 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
-import { pgdb } from './typeorm/typeorm.config';
-import { DataSource, DataSourceOptions } from 'typeorm';
+// import { ConfigService } from '@nestjs/config';
+// import { pgdb, configOptions } from './typeorm/typeorm.config';
+// import { DataSource, DataSourceOptions } from 'typeorm';
 import { APP_FILTER } from '@nestjs/core';
 
 import { UserModule } from './users/user/user.module';
@@ -18,14 +18,16 @@ import { LoggerModule } from './logger/logger.module';
 import { CustomExceptionFilter } from './exception-filter/exception.filter';
 // import { LoggerModule } from './logger/logger.module';
 import { AuthModule } from './auth/auth.module';
+import dataSource, { configOptions } from './typeorm/typeorm.config';
+import { DataSource } from 'typeorm';
 
-const typeOrmConfigOptions = {
-  imports: [ConfigModule.forRoot({ load: [pgdb] })],
-  useFactory: async (configService: ConfigService) => configService.get('pgdb'),
-  dataSourceFactory: async (options: DataSourceOptions) =>
-    new DataSource(options).initialize(),
-  inject: [ConfigService],
-};
+// const typeOrmConfigOptions = {
+//   imports: [ConfigModule.forRoot({ load: [pgdb] })],
+//   useFactory: async (configService: ConfigService) => configService.get('pgdb'),
+//   dataSourceFactory: async (options: DataSourceOptions) =>
+//     new DataSource(options).initialize(),
+//   inject: [ConfigService],
+// };
 
 @Module({
   imports: [
@@ -36,7 +38,9 @@ const typeOrmConfigOptions = {
     FavoritesModule,
     LoggerModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync(typeOrmConfigOptions),
+    // TypeOrmModule.forRootAsync(typeOrmConfigOptions),
+    TypeOrmModule.forRoot(configOptions),
+
     AuthModule,
   ],
   controllers: [AppController],
@@ -49,6 +53,8 @@ const typeOrmConfigOptions = {
   ],
 })
 export class AppModule implements NestModule {
+  constructor(private dataSource: DataSource) { }
+
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMidleware).forRoutes('*');
   }
