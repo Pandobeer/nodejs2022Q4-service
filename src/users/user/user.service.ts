@@ -1,6 +1,11 @@
-import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcryptjs';
 
 import { CreateUserDto } from './../dto/create-user.dto';
 import { UpdateUserDto } from './../dto/update-user.dto';
@@ -11,13 +16,20 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
-  createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(
+      createUserDto.password,
+      Number(process.env.CRYPT_SALT || 10),
+    );
+
     const newUser = this.userRepository.create({
       ...createUserDto,
+      password: hashedPassword,
     });
-    return this.userRepository.save(newUser);
+
+    return await this.userRepository.save(newUser);
   }
 
   async getAllUsers() {
@@ -30,10 +42,17 @@ export class UserService {
     const user = await this.userRepository.findOneBy({ id });
 
     if (!user) {
-      throw new HttpException(
-        `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException(`User with provided id does not exist`);
+    }
+
+    return user;
+  }
+
+  async findOneByLogin(login: string) {
+    const user = await this.userRepository.findOneBy({ login });
+
+    if (!user) {
+      throw new ForbiddenException(`User with provided login was not found`);
     }
 
     return user;
@@ -42,11 +61,13 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.findOne(id);
 
-    if (user.password !== updateUserDto.oldPassword) {
-      throw new HttpException(
-        `Old password is incorrect`,
-        HttpStatus.FORBIDDEN,
-      );
+    const matchPasswords = await bcrypt.compare(
+      updateUserDto.oldPassword,
+      user.password,
+    );
+
+    if (!matchPasswords) {
+      throw new ForbiddenException(`Old password is incorrect`);
     }
 
     Object.assign(user, { password: updateUserDto.newPassword });
@@ -60,12 +81,24 @@ export class UserService {
     const userToDelete = await this.userRepository.findOneBy({ id });
 
     if (!userToDelete) {
-      throw new HttpException(
-        `User with provided id does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException(`User with provided id does not exist`);
     }
 
     return this.userRepository.delete(id);
+  }
+
+  async updateRefreshToken(
+    userId: string,
+    updRefreshToken: string,
+  ): Promise<void> {
+    const user = await this.userRepository
+      .findOneByOrFail({ id: userId })
+      .catch(() => {
+        throw new NotFoundException(`User with ID "${userId}" was not found`);
+      });
+
+    user.refreshToken = updRefreshToken;
+
+    await this.userRepository.save(user);
   }
 }

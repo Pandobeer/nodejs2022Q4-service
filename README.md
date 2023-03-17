@@ -19,48 +19,9 @@ npm install --legacy-peer-deps
 
 ## Adding .env
 
-** create .env file using .env.example as a pattern.
-Service should listen on PORT 4000 by default, PORT value is stored in .env file. **
+\*\* create .env file using .env.example as a pattern.
 
-## Running application
-
-```
-npm start
-```
-
-After starting the app on port (4000 as default) you can open POSTMAN or
-in your browser OpenAPI documentation by typing http://localhost:4000/api/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Create docker app image:
-
-```
-docker build . -t docker-basics-node
-```
-
-## Running docker app image:
-
-```
-docker run -t -i -p 4000:4000 docker-basics-node
-```
-
-## Create docker pg database image:
-
-```
-docker build ./database -t node-pg
-```
-
-## Running docker pg database image:
-
-```
-docker run -t -i -p 8001:8001 node-pg
-```
-
-or run in detached way:
-
-```
-docker run -t -i -d -p 8001:8001 node-pg
-```
+Service should listen on PORT 4000 by default, PORT value is stored in .env file. \*\*
 
 ## Running docker compose
 
@@ -68,47 +29,68 @@ docker run -t -i -d -p 8001:8001 node-pg
 docker-compose up
 ```
 
-## Running scan built images:
+## Running application
+
+After starting the app on port (4000 as default) you can open POSTMAN (http://localhost:4000)
+POSTMAN collection is: https://api.postman.com/collections/13645311-7b71065f-9068-4a7d-b57e-0719670c8d2c?access_key=PMAT-01GTAN3SQT6B9H3BSWHENE0VTQ
+
+In case the link with collection doesn't work, please message me in discord, i will resend the new one.
+
+## Working in application
+
+App is implemented with authorization. If you want to check any of the REST API commands,
+
+1. Make signup in Postman: POST:
+   http://localhost:4000/auth/signup
 
 ```
-npm run docker:scan
+{
+"login": "Mik12",
+"password": "123456"
+}
 ```
 
-## Pushing images to dockerHub:
+2. Make login: POST:
+   http://localhost:4000/auth/login
 
 ```
-pushing app:
-1. docker login -u <dockerhub_username> -p <dockerhub_password>
-2. docker tag app:app <dockerhub_username>/my-image:app
-3. docker push <dockerhub_username>/my-image:app
-, where my-image - is the name of repo to push in at Docker Hub
-
-pushing db:
-2. docker tag db:db <dockerhub_username>/my-image:db
-3. docker push <dockerhub_username>/my-image:db
-, where my-image - is the name of repo to push in at Docker Hub
-
+{
+  "login": "Mik12",
+  "password": "123456"
+}
 ```
 
-## Running migrations
+3. During any of the next REST API commands, choose Authorization--Bearer Token, add accessToken, that you received from login above.
 
-```
-npm run migrate:up
+4. To refresh login use POST:
+   http://localhost:4000/auth/refresh
+   In body:
+   {
+   "refreshToken": "...."
+   }
 
-Before running the script, please check, if the application container is running (docker-compose up -d)
-```
-
-Reverting migrations (each migration by one time)
-
-```
-npm run migrate:down
-```
+   In Authorization--Bearer add accessToken.
 
 ## Testing
 
 After application running open new terminal and enter:
+!!!!! If any tests are not passing, please try the script npm run test:auth once again. Sometimes 1 test might fail during the first run, but for the next one everything is passing.
 
-To run all tests without authorization
+To run all test with authorization
+
+```
+npm run test:auth
+```
+
+To run all tests without authorization, please comment out the following code in auth.module.ts:
+
+    consumer
+      .apply(AuthMiddleware)
+      .exclude({ path: '/auth/signup', method: RequestMethod.POST })
+      .exclude({ path: '/auth/login', method: RequestMethod.POST })
+      .exclude('/doc')
+      .exclude('/')
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
 
 ```
 npm run test
@@ -118,12 +100,6 @@ To run only one of all test suites
 
 ```
 npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
 ```
 
 To run only specific test suite with authorization
